@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  loadbalancer:
+    image: nginx:alpine
+    volumes:
+      - ./configs/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8080:80"
+    depends_on:
+      - auth-service
+
+  auth-service:
+    build: ./auth-service
+    environment:
+      PORT: 4001
+      DBHOST: auth-db
+      DBPASSWORD: pwd
+      DBUSER: postgres
+      DB: authdb
+      DBPORT: 5432
+      REDIS_URL: redis://authcache
+    volumes:
+      - ./auth-service/src:/app/src
+    ports:
+      - "4001:4001"
+
+    depends_on:
+      - auth-db
+      - auth-cache
+
+  auth-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_USER: postgres
+      POSTGRES_DB: authdb
+    volumes:
+      - authdb:/var/lib/postgresql/data
+    expose:
+      - "5432"
+
+  auth-cache:
+    image: redis:alpine
+    container_name: authcache
+    expose:
+      - 6379
+
+volumes:
+  authdb:
