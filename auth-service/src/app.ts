@@ -46,13 +46,13 @@ function startServer() {
     .then(() => {
       // Server starting
       app.listen(PORT, () => {
-        console.log(`Server listening on port ${PORT}`);
+        console.log(`auth-service activated on port ${PORT}`);
       });
     })
     .catch(() => {
       if (connectionAtempts > 5) return;
       connectionAtempts++;
-      console.log("Trying to connect again...");
+      console.log("auth-service trying to connect to database again...");
       setTimeout(startServer, 2000);
     });
 }
