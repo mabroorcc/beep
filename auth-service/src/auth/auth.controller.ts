@@ -9,16 +9,22 @@ import {
   CLIENT_SECRET,
 } from "../credentials";
 import { ServerException } from "../exceptions";
+import { StatusCodes } from "http-status-codes";
+import authMiddleWare from "../middlewares/auth.middleware";
 
 const authRouter = Router();
 
+//
 // User will come to this route for login
+//
 authRouter.get("/login/google", (_req, res) => {
   // redirecting user to google with my credentials
   res.redirect(FIRST_LOGIN_REDIRECT);
 });
 
+//
 // This route will be called by google
+//
 authRouter.get("/login/google/callback", async (req, res) => {
   try {
     // check if we got token or not
@@ -34,7 +40,6 @@ authRouter.get("/login/google/callback", async (req, res) => {
     // genearting token with that profile
     const token = await authService.getTokenByLogin(profile);
 
-    // Setting the jwt token as cookie
     res.cookie("auth", token, { httpOnly: true });
 
     // here user is logged in now and we should redirect him to website
@@ -44,11 +49,40 @@ authRouter.get("/login/google/callback", async (req, res) => {
   }
 });
 
-authRouter.get("/signout", (_req, res) => {
+//
+// this route will be used by other services to check if the jwt is valid
+//
+authRouter.get("/verify/jwt/:jwtid", async (req, res) => {
+  try {
+    // checking
+    const result = await authService.verifyToken(req.params.jwtid);
+
+    Responder.respondWithSuccess(res, 200, "valid", { success: result });
+  } catch (e) {
+    Responder.respondeWithError(
+      res,
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      e.message,
+      e
+    );
+  }
+});
+
+//
+//  for user signout
+//
+authRouter.get("/signout", authMiddleWare, (req, res) => {
+  // removing the cookie
   res.cookie("auth", "");
+
+  // removing the cache
+  authService.deleteToken(req.user.jwtId);
+
+  // responding
   Responder.respondWithSuccess(res, 200, "Signed out!");
 });
 
+// Convi
 const getDataUsingAccessToken = async (token: string) => {
   return await request({
     method: "get",

@@ -5,15 +5,15 @@ import * as userService from "../users/users.service";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../credentials";
 import { v4 } from "uuid";
+import * as jwtCache from "../cache/jwtId.cache";
 
 export const getTokenByLogin = async (payload: any): Promise<string> => {
   // Validation
   const userDto = new CreateUserDto();
+
   userDto.name = payload.name;
   userDto.email = payload.email;
   userDto.picture = payload.picture;
-
-  console.log(userDto);
 
   const valid = await validate(userDto);
   if (valid.length) throw new ServerException(valid);
@@ -25,9 +25,26 @@ export const getTokenByLogin = async (payload: any): Promise<string> => {
   // Creating new user
   const user = await userService.createUser(userDto);
 
-  return createToken({ ...user, jwtId: v4() });
+  const jwtId = v4();
+
+  // Storing the key in redis
+  await jwtCache.storeJwtIdInCache(jwtId, "true");
+
+  return createToken({ ...user, jwtId });
 };
 
+export const verifyToken = async (jwtId: string) => {
+  return jwtCache.checkJwtIdInCache(jwtId);
+};
+
+export const deleteToken = async (jwtId: string) => {
+  return jwtCache.deleteJwtFromCache(jwtId);
+};
+
+
+//
+// Convi
+//
 const createToken = (payload: any): string => {
   return jwt.sign(payload, JWT_SECRET);
 };
