@@ -26,6 +26,9 @@ const authMiddleWare = (
   next: NextFunction
 ) => {
   const auth = req.cookies.auth;
+
+  console.log(req.cookies)
+
   if (!auth) {
     return Responder.respondeWithError(
       res,

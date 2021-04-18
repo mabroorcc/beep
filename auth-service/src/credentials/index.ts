@@ -1,5 +1,11 @@
-export const CLIENT_ID = `176671414954-jqo54safscb71696puelddpe9jie1avn.apps.googleusercontent.com`;
-export const CLIENT_SECRET = `YoU4ciu1T9qOvFT9Wh1ltTLt`;
+
+// These should be the environment variables
+//
+//
+//
+//
+export const CLIENT_ID = `176671414954-gcdpafpbdqceelqfdi46dg54arbldibk.apps.googleusercontent.com`;
+export const CLIENT_SECRET = `owFoBlYLWRDmFRcIAY3WFUP_`;
 export const JWT_SECRET = `Hsd0F6-_nzSrSiFbaP`;
 
 // Create a scope what you want to use

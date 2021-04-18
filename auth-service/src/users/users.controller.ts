@@ -7,7 +7,6 @@ import authMiddleWare from "../middlewares/auth.middleware";
 
 const userRouter = Router();
 
-
 //
 userRouter.get("/check/username/:username", async (req, res) => {
   try {

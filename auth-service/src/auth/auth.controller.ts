@@ -23,6 +23,13 @@ authRouter.get("/login/google", (_req, res) => {
 });
 
 //
+// get current logged in user
+//
+authRouter.get("/current/user", authMiddleWare, (req, res) => {
+  return res.json({ user: req.user });
+});
+
+//
 // This route will be called by google
 //
 authRouter.get("/login/google/callback", async (req, res) => {
@@ -43,7 +50,7 @@ authRouter.get("/login/google/callback", async (req, res) => {
     res.cookie("auth", token, { httpOnly: true });
 
     // here user is logged in now and we should redirect him to website
-    Responder.respondWithSuccess(res, 200, "Logged in successfully!");
+    res.redirect("http://localhost:4000");
   } catch (e) {
     Responder.respondeWithError(res, 500, e.message, e);
   }

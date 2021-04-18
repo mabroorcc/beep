@@ -46,5 +46,20 @@ services:
     expose:
       - 6379
 
+  file-service:
+    build: ./file-service
+    volumes:
+      - ./file-service/src:/app/src
+      - filestore:/app/filestore
+
+    ports:
+      - "4002:4002"
+
+  web-client:
+    build: ./web-client
+    volumes:
+      - ./web-client/src:/app/src
+
 volumes:
   authdb:
+  filestore:
