@@ -5,10 +5,12 @@ import {
   useLocation,
 } from "react-router-dom";
 import "./App.css";
-import { Home,HOME_PAGE_ADDRESS } from "./pages/Home"
+import { Home, HOME_PAGE_ADDRESS } from "./pages/Home";
+import { UploadFile, UPLOAD_PAGE_ADDRESS } from "./pages/UploadFile";
+import { useAppSelector } from "./app/hooks";
+import { selectUser } from "./features/user/userSlice";
 
 const App: React.FC = () => {
-
   return (
     <div className="App">
       <Router>
@@ -20,13 +22,17 @@ const App: React.FC = () => {
 
 const AppWrapper: React.FC = () => {
   const location = useLocation();
+  const user = useAppSelector(selectUser);
 
   return (
-        <Switch location={location}>
-          <Route exact path={HOME_PAGE_ADDRESS} component={Home} />
-          <Route path="*" render={() => <h1>404 Not Found</h1>} />
-        </Switch>
-        );
+    <Switch location={location}>
+      <Route exact path={HOME_PAGE_ADDRESS} component={Home} />
+      {user && (
+        <Route exact path={UPLOAD_PAGE_ADDRESS} component={UploadFile} />
+      )}
+      <Route path="*" component={Home} />
+    </Switch>
+  );
 };
 
 export default App;

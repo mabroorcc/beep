@@ -18,19 +18,27 @@ export const getTokenByLogin = async (payload: any): Promise<string> => {
   const valid = await validate(userDto);
   if (valid.length) throw new ServerException(valid);
 
+  const jwtId = v4();
+
   // Checking if user already exists
-  const savedUser = await findIfUserExists(userDto);
-  if (savedUser) return createToken({ ...savedUser, jwtId: v4() });
+  const userExists = await findIfUserExists(userDto);
+
+  if (userExists) {
+    const token = createToken({ ...userExists, jwtId });
+
+    // Storing the key in redis cache
+    const result = await jwtCache.storeJwtIdInCache(jwtId, "true");
+    console.log("Stored jwt:" + result);
+    return token;
+  }
 
   // Creating new user
   const user = await userService.createUser(userDto);
-
-  const jwtId = v4();
-
+  const token = createToken({ ...user, jwtId });
   // Storing the key in redis
-  await jwtCache.storeJwtIdInCache(jwtId, "true");
-
-  return createToken({ ...user, jwtId });
+  const result = await jwtCache.storeJwtIdInCache(jwtId, "true");
+  console.log("Stored jwt:" + result);
+  return token;
 };
 
 export const verifyToken = async (jwtId: string) => {
@@ -40,7 +48,6 @@ export const verifyToken = async (jwtId: string) => {
 export const deleteToken = async (jwtId: string) => {
   return jwtCache.deleteJwtFromCache(jwtId);
 };
-
 
 //
 // Convi

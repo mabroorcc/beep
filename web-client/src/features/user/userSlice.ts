@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
 export interface User {
@@ -26,8 +26,6 @@ export const getLogedUserAsync = createAsyncThunk(
   "user/getLogedInUser",
   async () => {
     try {
-      console.log(document.cookie);
-
       const res = await fetch("http://localhost:4000/auth/a/current/user");
       const json = await res.json();
 

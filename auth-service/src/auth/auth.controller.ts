@@ -63,8 +63,15 @@ authRouter.get("/verify/jwt/:jwtid", async (req, res) => {
   try {
     // checking
     const result = await authService.verifyToken(req.params.jwtid);
-
-    Responder.respondWithSuccess(res, 200, "valid", { success: result });
+    if (result) {
+      return Responder.respondWithSuccess(res, 200, "valid", {
+        success: result,
+      });
+    } else {
+      return Responder.respondWithSuccess(res, 200, "Invalid", {
+        valid: result,
+      });
+    }
   } catch (e) {
     Responder.respondeWithError(
       res,
