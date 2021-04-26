@@ -5,6 +5,7 @@ services:
     image: nginx:alpine
     volumes:
       - ./configs/nginx.conf:/etc/nginx/nginx.conf:ro
+      - files:/usr/share/nginx/files
     ports:
       - "4000:4000"
     depends_on:
@@ -50,7 +51,7 @@ services:
     build: ./file-service
     volumes:
       - ./file-service/src:/app/src
-      - filestore:/app/filestore
+      - files:/app/files
 
     ports:
       - "4002:4002"
@@ -62,4 +63,4 @@ services:
 
 volumes:
   authdb:
-  filestore:
+  files:

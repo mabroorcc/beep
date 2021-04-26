@@ -19,6 +19,17 @@ export const UploadFile: React.FC = () => {
 
   return (
     <div>
+      {fileState.files &&
+        fileState.files.map((item) => {
+          return (
+            <div key={item.url}>
+              File -- {item.fileName} -- has url ----- {item.url}
+            </div>
+          );
+        })}
+      {fileState.progress > 0 && (
+        <progress value={fileState.progress} max={100}></progress>
+      )}
       <input onChange={handleFileChange} type="file" />
     </div>
   );

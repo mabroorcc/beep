@@ -1,16 +1,18 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import io, { Socket } from "socket.io-client";
+import io from "socket.io-client";
 import { AppThunk } from "../../app/store";
 import { RootState } from "../../app/store";
 
 export interface UploadState {
   uploading: boolean;
   progress: number;
+  files: { fileName: string; url: string }[];
 }
 
 const initialState: UploadState = {
   uploading: false,
   progress: 0,
+  files: [],
 };
 
 const UploadSlice = createSlice({
@@ -23,10 +25,16 @@ const UploadSlice = createSlice({
     setProgress: (state, action: PayloadAction<number>) => {
       state.progress = action.payload;
     },
+    addFile: (
+      state,
+      action: PayloadAction<{ fileName: string; url: string }>
+    ) => {
+      state.files.push(action.payload);
+    },
   },
 });
 
-export const { setUploading, setProgress } = UploadSlice.actions;
+export const { setUploading, setProgress, addFile } = UploadSlice.actions;
 export default UploadSlice.reducer;
 export const selectUpload = (state: RootState) => state.upload;
 
@@ -44,17 +52,35 @@ export const uploadFileAction = (file: File): AppThunk => async (
   });
 
   dispatch(setUploading(true));
+  dispatch(setProgress(0));
 
   fsSocket.on("file-channel", (chan) => {
+    // updating the progress state
+    fsSocket.on(chan, (arg: any) => {
+      dispatch(setProgress(arg));
+    });
+
     // split the file and start sending the files on this channel
     let chunkSize = 100000;
-    if (file.size < chunkSize) {
-      fsSocket.emit(chan, { partNo: -1, buff: file.arrayBuffer() });
-    }
+    splitFile(0, chunkSize, file, (part) => {
+      fsSocket.emit(chan, part);
+    });
+  });
+
+  // log
+  fsSocket.on("file-error", (arg) => {
+    console.log("file-error", arg);
+  });
+
+  // log
+  fsSocket.on("upload-error", (arg) => {
+    console.log("upload-error", arg);
   });
 
   fsSocket.on("file-upload-finish", (arg) => {
-    // get url and do something
+    dispatch(addFile({ fileName: file.name, url: arg }));
+    console.log(arg);
+    fsSocket.disconnect();
   });
 
   fsSocket.on("file-error", (arg) => console.log(arg));
@@ -62,9 +88,25 @@ export const uploadFileAction = (file: File): AppThunk => async (
   fsSocket.emit("file-upload", {
     fileName: file.name,
     fileSize: file.size,
-    fileType: file.type,
+    chunkSize: 100000,
   });
-  // dispatch start split the file and start sending the data on the socket specified event
-  //
-  //get the url
+};
+
+const splitFile = async (
+  start: number,
+  chunkSize: number,
+  file: File,
+  callback: (arg: { partNo: number; buff: ArrayBuffer }) => void
+) => {
+  if (start + chunkSize > file.size) {
+    const blob = file.slice(start, file.size);
+    const buff = await blob.arrayBuffer();
+    callback({ partNo: -1, buff });
+    return;
+  } else {
+    const blob = file.slice(start, start + chunkSize);
+    const buff = await blob.arrayBuffer();
+    callback({ partNo: start / chunkSize, buff });
+    splitFile(start + chunkSize, chunkSize, file, callback);
+  }
 };
