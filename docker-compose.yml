@@ -52,14 +52,28 @@ services:
     volumes:
       - ./file-service/src:/app/src
       - files:/app/files
+    environment:
+      FILE_SERVICE_PORT: 4002
 
     ports:
       - "4002:4002"
 
-  web-client:
-    build: ./web-client
+  beep-socket-service:
+    build: ./beep-socket-service
+    environment:
+      BEEP_SOCKET_SERVICE_PORT: 4003 
+    ports:
+      - "4003:4003"
+
+  stun-service:
+    build: ./stun-service
+    ports:
+      - "4004:4004"
+
+  client-service:
+    build: ./client-service
     volumes:
-      - ./web-client/src:/app/src
+      - ./client-service/src:/app/src
 
 volumes:
   authdb:

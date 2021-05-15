@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-export const respondeWithError = (
+export const Error = (
   res: Response,
   status: number,
   error: string,
@@ -9,7 +9,7 @@ export const respondeWithError = (
   res.status(status).json({ error, payload });
 };
 
-export const respondWithSuccess = (
+export const Success = (
   res: Response,
   status: number = 200,
   message: string,

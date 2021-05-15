@@ -27,6 +27,19 @@ export const changeProfile = async (picture: string, userName: string) => {
   return await user.save();
 };
 
+export const getUserByEmail = async (email: string) => {
+  return UsersEntity.findOne({ email });
+};
+
+export const getUsersByUserName = async (userName: string) => {
+  return UsersEntity.getRepository()
+    .createQueryBuilder()
+    .select()
+    .where("\"userName\" ILIKE :userName", { userName: `%${userName}%` })
+    .limit(10)
+    .getMany();
+};
+
 export const changeUserName = async (
   uuid: string,
   userName: string

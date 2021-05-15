@@ -28,7 +28,7 @@ const authMiddleWare = (
   const auth = req.cookies.auth;
 
   if (!auth) {
-    return Responder.respondeWithError(
+    return Responder.Error(
       res,
       StatusCodes.UNAUTHORIZED,
       "Please login first!"
@@ -40,7 +40,7 @@ const authMiddleWare = (
     req.user = user as IUserJwt;
     next();
   } catch (e) {
-    Responder.respondeWithError(
+    Responder.Error(
       res,
       StatusCodes.BAD_REQUEST,
       "Please login first!"

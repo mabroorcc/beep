@@ -43,6 +43,13 @@ io.use(async (socket, next) => {
 io.on("connection", (socket: Socket) => {
   let uploadJobs: { fileId: string; stream: WriteStream }[] = [];
 
+  socket.on("file-received", (filename) => {
+    fs.unlink(path.resolve(__dirname + "/../files/" + filename), (err) => {
+      if (err) return socket.emit("file-err", err);
+      socket.emit("file-done");
+    });
+  });
+
   socket.on("file-upload", (arg) => {
     // get the metadata from the arg and validate
     const fileMetadata = getValidatedFileUploadArgs(arg);
@@ -146,4 +153,6 @@ const getValidatedFileUploadArgs = (
   return { fileName, fileSize, chunkSize };
 };
 
-io.listen(4002);
+const PORT = process.env.FILE_SERVICE_PORT || 4002;
+
+io.listen(Number(PORT));

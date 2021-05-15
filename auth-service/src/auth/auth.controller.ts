@@ -25,8 +25,26 @@ authRouter.get("/login/google", (_req, res) => {
 //
 // get current logged in user
 //
-authRouter.get("/current/user", authMiddleWare, (req, res) => {
-  return res.json({ user: req.user });
+authRouter.get("/current/user", authMiddleWare, async (req, res) => {
+  try {
+    // check from cache if the user is valid
+    const valid = await authService.verifyToken(req.user.jwtId);
+    if (!valid) {
+      // not valid then remove the cookie
+      res.cookie("auth", "", { httpOnly: true });
+
+      // then ask user to login again
+      return Responder.Error(res, StatusCodes.FORBIDDEN, "Please login again!");
+    }
+
+    // every thing goes well return the user
+    return Responder.Success(res, 200, "User returned", {
+      user: req.user,
+    });
+  } catch (e) {
+    console.log(e);
+    Responder.Error(res, StatusCodes.INTERNAL_SERVER_ERROR, e.message);
+  }
 });
 
 //
@@ -52,7 +70,7 @@ authRouter.get("/login/google/callback", async (req, res) => {
     // here user is logged in now and we should redirect him to website
     res.redirect("http://localhost:4000");
   } catch (e) {
-    Responder.respondeWithError(res, 500, e.message, e);
+    Responder.Error(res, StatusCodes.INTERNAL_SERVER_ERROR, e.message, e);
   }
 });
 
@@ -64,21 +82,16 @@ authRouter.get("/verify/jwt/:jwtid", async (req, res) => {
     // checking
     const result = await authService.verifyToken(req.params.jwtid);
     if (result) {
-      return Responder.respondWithSuccess(res, 200, "valid", {
+      return Responder.Success(res, 200, "valid", {
         success: result,
       });
     } else {
-      return Responder.respondWithSuccess(res, 200, "Invalid", {
+      return Responder.Error(res, 200, "Invalid", {
         valid: result,
       });
     }
   } catch (e) {
-    Responder.respondeWithError(
-      res,
-      StatusCodes.INTERNAL_SERVER_ERROR,
-      e.message,
-      e
-    );
+    Responder.Error(res, StatusCodes.INTERNAL_SERVER_ERROR, e.message, e);
   }
 });
 
@@ -93,7 +106,7 @@ authRouter.get("/signout", authMiddleWare, (req, res) => {
   authService.deleteToken(req.user.jwtId);
 
   // responding
-  Responder.respondWithSuccess(res, 200, "Signed out!");
+  Responder.Success(res, 200, "Signed out!");
 });
 
 // Convi

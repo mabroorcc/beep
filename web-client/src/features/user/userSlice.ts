@@ -21,7 +21,6 @@ const initialState: UserState = {
   user: undefined,
 };
 
-//  location.replace("http:localhost:4000/auth/a/login/google")
 export const getLogedUserAsync = createAsyncThunk(
   "user/getLogedInUser",
   async () => {
@@ -29,7 +28,7 @@ export const getLogedUserAsync = createAsyncThunk(
       const res = await fetch("http://localhost:4000/auth/a/current/user");
       const json = await res.json();
 
-      return json.user;
+      return json.payload.user;
     } catch (e) {
       console.log(e);
       return undefined;
