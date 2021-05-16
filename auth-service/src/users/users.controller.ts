@@ -19,12 +19,11 @@ userRouter.get("/check/username/:username", async (req, res) => {
     const user = await userService.findOneUser({ userName });
 
     if (user && user.userName === userName) {
-      return Responder.Success(res, StatusCodes.OK, "Already taken!");
+      return Responder.Success(res, StatusCodes.UNAUTHORIZED, "Already taken!");
     }
 
     Responder.Success(res, 200, "Available!");
   } catch (e) {
-    console.log(e);
     Responder.Error(res, StatusCodes.INTERNAL_SERVER_ERROR, e.message, e);
   }
 });
@@ -54,11 +53,16 @@ userRouter.post("/change/username", authMiddleWare, async (req, res) => {
   try {
     const userName = req.body.userName;
     if (!userName) {
-      Responder.Error(res, StatusCodes.BAD_REQUEST, "userName not found!");
+      return Responder.Error(
+        res,
+        StatusCodes.BAD_REQUEST,
+        "userName not found!"
+      );
     }
 
     const result = await userService.changeUserName(req.user.id, userName);
-    Responder.Success(
+    res.cookie("auth", "");
+    return Responder.Success(
       res,
       StatusCodes.OK,
       "userName changed successfully!",

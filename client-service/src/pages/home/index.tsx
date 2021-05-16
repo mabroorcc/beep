@@ -17,7 +17,7 @@ export const HomePage: React.FC<Props> = () => {
     if (!user) {
       history.push(LOGIN_PAGE_PATH);
     }
-  }, [user]);
+  },[]);
 
   return (
     <PageComponenet enter="middle" leave="left" duration={0.3}>

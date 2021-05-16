@@ -63,9 +63,10 @@ authRouter.get("/login/google/callback", async (req, res) => {
     const profile = await getDataUsingAccessToken(access_token);
 
     // genearting token with that profile
-    const token = await authService.getTokenByLogin(profile);
+    const { token, newuser } = await authService.getTokenByLogin(profile);
 
     res.cookie("auth", token, { httpOnly: true });
+    res.cookie("new", String(newuser));
 
     // here user is logged in now and we should redirect him to website
     res.redirect("http://localhost:4000");

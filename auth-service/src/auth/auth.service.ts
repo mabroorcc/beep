@@ -7,7 +7,9 @@ import { JWT_SECRET } from "../credentials";
 import { v4 } from "uuid";
 import * as jwtCache from "../cache/jwtId.cache";
 
-export const getTokenByLogin = async (payload: any): Promise<string> => {
+export const getTokenByLogin = async (
+  payload: any
+): Promise<{ token: string; newuser: boolean }> => {
   // Validation
   const userDto = new CreateUserDto();
 
@@ -28,8 +30,7 @@ export const getTokenByLogin = async (payload: any): Promise<string> => {
 
     // Storing the key in redis cache
     const result = await jwtCache.storeJwtIdInCache(jwtId, "true");
-    console.log("Stored jwt:" + result);
-    return token;
+    return { token, newuser: false };
   }
 
   // Creating new user
@@ -37,8 +38,8 @@ export const getTokenByLogin = async (payload: any): Promise<string> => {
   const token = createToken({ ...user, jwtId });
   // Storing the key in redis
   const result = await jwtCache.storeJwtIdInCache(jwtId, "true");
-  console.log("Stored jwt:" + result);
-  return token;
+
+  return { token, newuser: true };
 };
 
 export const verifyToken = async (jwtId: string) => {

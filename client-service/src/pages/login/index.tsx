@@ -10,6 +10,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../../features/user/userSlice";
 import { HOME_PAGE_PATH } from "../home";
 import { useHistory } from "react-router-dom";
+import { CREATE_USER_NAME_PAGE_PATH } from "../CreateUserNamePage";
 
 export interface Props {}
 
@@ -21,8 +22,10 @@ export const LoginPage: React.FC<Props> = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (user) history.push(HOME_PAGE_PATH);
-  });
+    const newuser = document.cookie.split("=")[1] === "true";
+    if (user && !newuser) return history.push(HOME_PAGE_PATH);
+    if (newuser) history.push(CREATE_USER_NAME_PAGE_PATH);
+  }, []);
 
   const handleLogin = () => {
     window.location.replace("http://localhost:4000/auth/a/login/google");
