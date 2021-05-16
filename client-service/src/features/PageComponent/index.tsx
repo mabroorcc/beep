@@ -1,14 +1,15 @@
 import { AnimatedComponent } from "../AnimatedComponent";
 
 export interface Props {
-  enter: "top" | "left" | "right" | "bottom";
-  leave: "top" | "left" | "right" | "bottom";
+  enter: "top" | "left" | "right" | "bottom" | "middle";
+  leave: "top" | "left" | "right" | "bottom" | "middle";
   duration: number;
 }
 
-export const Page: React.FC<Props> = ({ children, enter, leave, duration }) => {
+export const PageComponenet: React.FC<Props> = ({ children, enter, leave, duration }) => {
   let initial;
   let exit;
+  let animate: any = { x: 0, y: 0 };
 
   if (enter === "top") {
     initial = { y: "-100%" };
@@ -42,12 +43,21 @@ export const Page: React.FC<Props> = ({ children, enter, leave, duration }) => {
     exit = { y: "100%" };
   }
 
+  if (enter === "middle") {
+    initial = { scale: 0 };
+    animate = { scale: 1 };
+  }
+
+  if (leave === "middle") {
+    exit = { scale: 0 };
+  }
+
   return (
     <AnimatedComponent
       style={{ width: "100vw", height: "100vh", overflow: "hidden" }}
       initial={initial}
       transition={{ duration }}
-      animate={{ x: 0, y: 0 }}
+      animate={animate}
       exit={exit}
     >
       {children}
