@@ -1,26 +1,92 @@
-import { Link } from "react-router-dom";
+import { Dancing } from "../../assets/Dancing";
 import { PageComponenet } from "../../features/PageComponent";
-import {HOME_PAGE_PATH} from "../home";
+import { Container } from "../../features/Container";
+import * as globalStyle from "../../styles";
+import { Button, makeStyles, Typography } from "@material-ui/core";
+import { GoogleIcon } from "../../assets/GoogleIcon";
+import { BeepTopLeftLogo } from "../../features/BeepTopLeftLogo";
+import { useEffect } from "react";
+import { useAppSelector } from "../../app/hooks";
+import { selectUser } from "../../features/user/userSlice";
+import { HOME_PAGE_PATH } from "../home";
+import { useHistory } from "react-router-dom";
 
 export interface Props {}
 
 export const LOGIN_PAGE_PATH = "/login";
 
 export const LoginPage: React.FC<Props> = () => {
+  const classes = useStyles();
+  const user = useAppSelector(selectUser);
+  const history = useHistory();
+
+  useEffect(() => {
+    if (user) history.push(HOME_PAGE_PATH);
+  });
+
+  const handleLogin = () => {
+    window.location.replace("http://localhost:4000/auth/a/login/google");
+  };
+
   return (
-    <PageComponenet enter="right" leave="left" duration={0.5}>
-      <div style={{ ...styles.main }}>
-        Login Page
-        <Link to={HOME_PAGE_PATH}>/home</Link>
+    <PageComponenet enter="middle" leave="left" duration={0.3}>
+      <div style={{ ...styles.root }}>
+        <BeepTopLeftLogo />
+        <Container style={{ ...styles.container }} height="auto" width="15rem">
+          <Dancing />
+        </Container>
+        <Typography className={classes.mainType} variant="h6" align="center">
+          Welcome to the most bleeding edge chatting platform
+        </Typography>
+        <Typography paragraph className={classes.subType} align="center">
+          Connect with friends, family and people securely and instantly with
+          our fast and secure communication services
+        </Typography>
+        <Button
+          onClick={handleLogin}
+          variant="contained"
+          color="primary"
+          className={classes.loginButton}
+          startIcon={<GoogleIcon />}
+        >
+          login
+        </Button>
       </div>
     </PageComponenet>
   );
 };
 
-const styles: Record<string, React.CSSProperties> = {
-  main: {
-    width: "100vw",
-    height: "100vh",
-    background: "pink",
+const useStyles = makeStyles({
+  mainType: {
+    fontWeight: "bold",
+    fontSize: "1.3rem",
+    width: "25rem",
+    lineHeight: "120%",
+    marginBottom: ".5rem",
   },
+  subType: {
+    color: "#9D9D9D",
+    fontSize: "0.9rem",
+    width: "19rem",
+    lineHeight: "120%",
+  },
+  loginButton: {
+    backgroundColor: "#E5E5E5",
+    width: "15rem",
+    borderRadius: "8px",
+    color: "#191720",
+    padding: "9px 30px",
+    "&:hover": {
+      backgroundColor: "#E5E5E5",
+    },
+  },
+});
+
+const styles: Record<string, React.CSSProperties> = {
+  root: {
+    ...globalStyle.center,
+    height: "100vh",
+    flexDirection: "column",
+  },
+  container: { marginBottom: "20px" },
 };
