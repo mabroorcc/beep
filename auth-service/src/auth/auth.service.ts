@@ -57,6 +57,6 @@ const createToken = (payload: any): string => {
   return jwt.sign(payload, JWT_SECRET);
 };
 
-const findIfUserExists = async (user: any) => {
-  return await userService.findOneUser(user);
+const findIfUserExists = async (user: CreateUserDto) => {
+  return await userService.findOneUser({ email: user.email });
 };

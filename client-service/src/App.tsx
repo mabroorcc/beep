@@ -11,7 +11,7 @@ import { getLogedUserAsync, selectUser } from "./features/user/userSlice";
 import {
   CreateUserName,
   CHANGE_USER_NAME_PAGE_PATH,
-} from "./pages/CreateUserName";
+} from "./pages/ChangeUserName";
 import { ChangeProfile, CHANGE_PROFILE_PAGE_PATH } from "./pages/ChangeProfile";
 
 function App() {

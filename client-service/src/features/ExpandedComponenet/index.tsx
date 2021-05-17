@@ -1,18 +1,14 @@
 import { CSSProperties } from "react";
 
 export interface Props {
-  width: string;
-  height: string;
   center?: boolean;
-  style?: React.CSSProperties;
+  styles?: CSSProperties;
 }
 
-export const Container: React.FC<Props> = ({
-  width,
-  height,
-  children,
-  style,
+export const ExpandedComponenet: React.FC<Props> = ({
+  styles,
   center,
+  children,
 }) => {
   const centerStyle: CSSProperties = center
     ? {
@@ -21,8 +17,9 @@ export const Container: React.FC<Props> = ({
         alignItems: "center",
       }
     : {};
-
   return (
-    <div style={{ width, height, ...centerStyle, ...style }}>{children}</div>
+    <div style={{ width: "100%", height: "100%", ...centerStyle, ...styles }}>
+      {children}
+    </div>
   );
 };

@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import userReducer from "../features/user/userSlice";
 import loadingReducer from "../features/LoadingBackdrop/loadingSlice";
+import uploadReducer from "../features/FileUpload/uploadSlice";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     loading: loadingReducer,
+    upload: uploadReducer,
   },
 });
 

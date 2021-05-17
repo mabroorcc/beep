@@ -10,7 +10,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../../features/user/userSlice";
 import { HOME_PAGE_PATH } from "../home";
 import { useHistory } from "react-router-dom";
-import { CHANGE_USER_NAME_PAGE_PATH } from "../CreateUserName";
+import { CHANGE_USER_NAME_PAGE_PATH } from "../ChangeUserName";
 
 export interface Props {}
 
