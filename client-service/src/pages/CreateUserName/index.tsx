@@ -13,13 +13,15 @@ import { Container } from "../../features/Container";
 import { PageComponenet } from "../../features/PageComponent";
 import { logout, selectUser } from "../../features/user/userSlice";
 import * as globalStyle from "../../styles";
+import { HOME_PAGE_PATH } from "../home";
 import { LOGIN_PAGE_PATH } from "../login";
+import CancelIcon from "@material-ui/icons/Cancel";
 
 export interface Props {}
 
-export const CREATE_USER_NAME_PAGE_PATH = "/setusername";
+export const CHANGE_USER_NAME_PAGE_PATH = "/setusername";
 
-export const CreateUserNamePage: React.FC<Props> = () => {
+export const CreateUserName: React.FC<Props> = () => {
   const [userName, setUserName] = useState("");
   const [userError, setUserError] = useState(false);
   const classes = useStyles();
@@ -42,6 +44,7 @@ export const CreateUserNamePage: React.FC<Props> = () => {
   };
 
   const changeUserName = async () => {
+    if (user && user.userName === userName) return history.push(HOME_PAGE_PATH);
     if (!userError && userName.length > 7) {
       const url = `http://localhost:4000/auth/users/change/username`;
       const res = await fetch(url, {
@@ -61,8 +64,12 @@ export const CreateUserNamePage: React.FC<Props> = () => {
     checkUserName();
   };
 
+  const handleCancel = () => {
+    history.goBack();
+  };
+
   return (
-    <PageComponenet duration={0.4} enter="middle" leave="left">
+    <PageComponenet duration={0.2} enter="middle" leave="left">
       <BeepTopLeftLogo />
       <div style={{ ...styles.root }}>
         <Container style={{ ...styles.container }} width="20rem" height="10rem">
@@ -83,6 +90,9 @@ export const CreateUserNamePage: React.FC<Props> = () => {
               width="100%"
               height="auto"
             >
+              <IconButton onClick={handleCancel} aria-label="done">
+                <CancelIcon />
+              </IconButton>
               <IconButton onClick={changeUserName} aria-label="done">
                 <DoneIcon />
               </IconButton>

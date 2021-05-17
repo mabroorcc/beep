@@ -9,9 +9,10 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { getLogedUserAsync, selectUser } from "./features/user/userSlice";
 import {
-  CreateUserNamePage,
-  CREATE_USER_NAME_PAGE_PATH,
-} from "./pages/CreateUserNamePage";
+  CreateUserName,
+  CHANGE_USER_NAME_PAGE_PATH,
+} from "./pages/CreateUserName";
+import { ChangeProfile, CHANGE_PROFILE_PAGE_PATH } from "./pages/ChangeProfile";
 
 function App() {
   const location = useLocation();
@@ -33,8 +34,13 @@ function App() {
               <Route exact path={HOME_PAGE_PATH} component={HomePage} />
               <Route
                 exact
-                path={CREATE_USER_NAME_PAGE_PATH}
-                component={CreateUserNamePage}
+                path={CHANGE_USER_NAME_PAGE_PATH}
+                component={CreateUserName}
+              />
+              <Route
+                exact
+                path={CHANGE_PROFILE_PAGE_PATH}
+                component={ChangeProfile}
               />
             </>
           )}
