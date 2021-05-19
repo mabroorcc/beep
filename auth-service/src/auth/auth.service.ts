@@ -29,7 +29,7 @@ export const getTokenByLogin = async (
     const token = createToken({ ...userExists, jwtId });
 
     // Storing the key in redis cache
-    const result = await jwtCache.storeJwtIdInCache(jwtId, "true");
+    await jwtCache.storeJwtIdInCache(jwtId, "true");
     return { token, newuser: false };
   }
 
@@ -37,7 +37,7 @@ export const getTokenByLogin = async (
   const user = await userService.createUser(userDto);
   const token = createToken({ ...user, jwtId });
   // Storing the key in redis
-  const result = await jwtCache.storeJwtIdInCache(jwtId, "true");
+  await jwtCache.storeJwtIdInCache(jwtId, "true");
 
   return { token, newuser: true };
 };
