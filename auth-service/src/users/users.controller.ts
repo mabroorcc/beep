@@ -68,7 +68,35 @@ userRouter.post("/change/username", authMiddleWare, async (req, res) => {
       result
     );
   } catch (e) {
-    Responder.Error(res, StatusCodes.BAD_REQUEST, e.message, e);
+    Responder.Error(res, StatusCodes.INTERNAL_SERVER_ERROR, e.message, e);
+  }
+});
+
+userRouter.post("/change/name", authMiddleWare, async (req, res) => {
+  try {
+    const name = req.body.name;
+
+    if (!name) {
+      return Responder.Error(
+        res,
+        StatusCodes.NOT_ACCEPTABLE,
+        "Property [name] not found!"
+      );
+    }
+
+    const result = await userService.changeName(name, req.user.id);
+
+    if (result === "User not found") {
+      return Responder.Success(
+        res,
+        StatusCodes.EXPECTATION_FAILED,
+        "User not found for some reason!"
+      );
+    }
+
+    Responder.Success(res, StatusCodes.OK, "Changed property [name] of user!");
+  } catch (e) {
+    Responder.Error(res, StatusCodes.INTERNAL_SERVER_ERROR, e.message, e);
   }
 });
 

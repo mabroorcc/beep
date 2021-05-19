@@ -13,6 +13,7 @@ import {
   CHANGE_USER_NAME_PAGE_PATH,
 } from "./pages/ChangeUserName";
 import { ChangeProfile, CHANGE_PROFILE_PAGE_PATH } from "./pages/ChangeProfile";
+import { ExpandedComponenet } from "./features/ExpandedComponenet";
 
 function App() {
   const location = useLocation();
@@ -41,6 +42,12 @@ function App() {
                 exact
                 path={CHANGE_PROFILE_PAGE_PATH}
                 component={ChangeProfile}
+              />
+              <Route
+                path="*"
+                render={() => (
+                  <ExpandedComponenet center>404 not found</ExpandedComponenet>
+                )}
               />
             </>
           )}

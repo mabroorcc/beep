@@ -18,6 +18,16 @@ export const deleteUser = async (email: string) => {
   return true;
 };
 
+export const changeName = async (name: string, uid: string) => {
+  const user = await UsersEntity.findOne({ id: uid });
+  if (user) {
+    user.name = name;
+    return user.save();
+  } else {
+    return "User not found";
+  }
+};
+
 export const changeProfile = async (picture: string, userName: string) => {
   const user = await UsersEntity.findOne({ userName });
   if (!user) throw new ServerException("user not found!");
@@ -35,7 +45,7 @@ export const getUsersByUserName = async (userName: string) => {
   return UsersEntity.getRepository()
     .createQueryBuilder()
     .select()
-    .where("\"userName\" ILIKE :userName", { userName: `%${userName}%` })
+    .where('"userName" ILIKE :userName', { userName: `%${userName}%` })
     .limit(10)
     .getMany();
 };

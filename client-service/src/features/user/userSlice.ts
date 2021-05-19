@@ -26,9 +26,12 @@ export const getLogedUserAsync = createAsyncThunk(
   async () => {
     try {
       const res = await fetch("http://localhost:4000/auth/a/current/user");
-      const json = await res.json();
-
-      return json.payload.user;
+      if (res.ok) {
+        const json = await res.json();
+        if (json.payload && json.payload.user) return json.payload.user;
+        return undefined;
+      }
+      return undefined;
     } catch (e) {
       console.log(e);
       return undefined;
@@ -49,6 +52,9 @@ export const UserSlice = createSlice({
     setUserNameAct: (state, action: PayloadAction<string>) => {
       if (state.user) state.user.userName = action.payload;
     },
+    setFullNameAct: (state, action: PayloadAction<string>) => {
+      if (state.user) state.user.name = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getLogedUserAsync.pending, (state) => {
@@ -60,6 +66,11 @@ export const UserSlice = createSlice({
   },
 });
 
-export const { logout, setUserNameAct, setProfileAct } = UserSlice.actions;
+export const {
+  logout,
+  setUserNameAct,
+  setProfileAct,
+  setFullNameAct,
+} = UserSlice.actions;
 export const selectUser = (state: RootState) => state.user.user;
 export default UserSlice.reducer;
