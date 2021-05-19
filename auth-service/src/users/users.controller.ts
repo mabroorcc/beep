@@ -61,7 +61,6 @@ userRouter.post("/change/username", authMiddleWare, async (req, res) => {
     }
 
     const result = await userService.changeUserName(req.user.id, userName);
-    res.cookie("auth", "");
     return Responder.Success(
       res,
       StatusCodes.OK,

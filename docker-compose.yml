@@ -61,9 +61,29 @@ services:
   beep-socket-service:
     build: ./beep-socket-service
     environment:
-      BEEP_SOCKET_SERVICE_PORT: 4003 
+      BEEP_SOCKET_SERVICE_PORT: 4003
+      BEEP_SOCKET_SERVICE_DBHOST: socket-db
+      BEEP_SOCKET_SERVICE_DBPASSWORD: pwd
+      BEEP_SOCKET_SERVICE_DBUSER: postgres
+      BEEP_SOCKET_SERVICE_DB: socketdb
+      BEEP_SOCKET_SERVICE_DBPORT: 5433
     ports:
       - "4003:4003"
+    depends_on:
+      - socket-db
+
+  socket-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_USER: postgres
+      POSTGRES_DB: socketdb
+      POSTGRES_PORT: 5433
+    volumes:
+      - socketdb:/var/lib/postgresql/data
+    expose:
+      - 5433
+    command: -p 5433
 
   stun-service:
     build: ./stun-service
@@ -78,3 +98,4 @@ services:
 volumes:
   authdb:
   files:
+  socketdb:

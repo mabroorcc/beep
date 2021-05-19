@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
 export interface User {
@@ -43,6 +43,12 @@ export const UserSlice = createSlice({
     logout: (state) => {
       state.user = undefined;
     },
+    setProfileAct: (state, action: PayloadAction<string>) => {
+      if (state.user) state.user.picture = action.payload;
+    },
+    setUserNameAct: (state, action: PayloadAction<string>) => {
+      if (state.user) state.user.userName = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getLogedUserAsync.pending, (state) => {
@@ -54,6 +60,6 @@ export const UserSlice = createSlice({
   },
 });
 
-export const { logout } = UserSlice.actions;
+export const { logout, setUserNameAct, setProfileAct } = UserSlice.actions;
 export const selectUser = (state: RootState) => state.user.user;
 export default UserSlice.reducer;

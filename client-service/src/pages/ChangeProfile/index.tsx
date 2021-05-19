@@ -5,7 +5,7 @@ import { Container } from "../../features/Container";
 import { ExpandedComponenet } from "../../features/ExpandedComponenet";
 import Cropper from "react-easy-crop";
 import { PageComponenet } from "../../features/PageComponent";
-import { selectUser } from "../../features/user/userSlice";
+import { selectUser, setProfileAct } from "../../features/user/userSlice";
 import EditIcon from "@material-ui/icons/Edit";
 import CancelIcon from "@material-ui/icons/Cancel";
 import DoneIcon from "@material-ui/icons/Done";
@@ -79,8 +79,15 @@ export const ChangeProfile: React.FC<Props> = () => {
     dispatch(
       uploadFileAction("profilePic", imageBlob as Blob, async (arg) => {
         const res = await changeUserProfile(arg);
-        if (res.ok) history.push(HOME_PAGE_PATH);
-        // update app state here
+        const newuser = document.cookie.split("=")[1] === "true";
+
+        // updateing the state
+        dispatch(setProfileAct(arg));
+
+        if (res.ok && newuser) {
+          return history.push(HOME_PAGE_PATH);
+        }
+        return history.goBack();
       })
     );
   };
@@ -162,7 +169,7 @@ export const ChangeProfile: React.FC<Props> = () => {
             </Container>
             <Typography>Scroll to adjust the zoom</Typography>
             <Container width="100%" height="auto" style={styles.controls()}>
-              <IconButton onClick={handleCancelEdit} aria-label="done">
+              <IconButton onClick={handleCancelEdit} aria-label="cancel">
                 <CancelIcon />
               </IconButton>
               <IconButton onClick={handleDoneEdit} aria-label="done">

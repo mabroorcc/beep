@@ -11,11 +11,10 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { BeepTopLeftLogo } from "../../features/BeepTopLeftLogo";
 import { Container } from "../../features/Container";
 import { PageComponenet } from "../../features/PageComponent";
-import { logout, selectUser } from "../../features/user/userSlice";
+import { selectUser, setUserNameAct } from "../../features/user/userSlice";
 import * as globalStyle from "../../styles";
-import { HOME_PAGE_PATH } from "../home";
-import { LOGIN_PAGE_PATH } from "../login";
 import CancelIcon from "@material-ui/icons/Cancel";
+import { CHANGE_PROFILE_PAGE_PATH } from "../ChangeProfile";
 
 export interface Props {}
 
@@ -44,7 +43,7 @@ export const CreateUserName: React.FC<Props> = () => {
   };
 
   const changeUserName = async () => {
-    if (user && user.userName === userName) return history.push(HOME_PAGE_PATH);
+    if (user && user.userName === userName) return history.goBack();
     if (!userError && userName.length > 7) {
       const url = `http://localhost:4000/auth/users/change/username`;
       const res = await fetch(url, {
@@ -53,8 +52,10 @@ export const CreateUserName: React.FC<Props> = () => {
         body: JSON.stringify({ userName }),
       });
       if (res.ok) {
-        dispatch(logout());
-        history.push(LOGIN_PAGE_PATH);
+        dispatch(setUserNameAct(userName));
+        const newuser = document.cookie.split("=")[1] === "true";
+        if (newuser) return history.push(CHANGE_PROFILE_PAGE_PATH);
+        history.goBack();
       }
     }
   };
