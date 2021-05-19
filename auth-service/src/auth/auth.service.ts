@@ -20,26 +20,23 @@ export const getTokenByLogin = async (
   const valid = await validate(userDto);
   if (valid.length) throw new ServerException(valid);
 
-  const jwtId = v4();
+  const key = v4();
 
   // Checking if user already exists
   const userExists = await findIfUserExists(userDto);
 
   if (userExists) {
-    const token = createToken({ ...userExists, jwtId });
-
     // Storing the key in redis cache
-    await jwtCache.storeJwtIdInCache(jwtId, "true");
-    return { token, newuser: false };
+    await jwtCache.storeJwtIdInCache(key, userExists.id);
+    return { token: createToken(key), newuser: false };
   }
 
   // Creating new user
   const user = await userService.createUser(userDto);
-  const token = createToken({ ...user, jwtId });
   // Storing the key in redis
-  await jwtCache.storeJwtIdInCache(jwtId, "true");
+  await jwtCache.storeJwtIdInCache(key, user.id);
 
-  return { token, newuser: true };
+  return { token: createToken(key), newuser: true };
 };
 
 export const verifyToken = async (jwtId: string) => {

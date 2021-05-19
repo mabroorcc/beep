@@ -16,11 +16,13 @@ export const storeJwtIdInCache = async (
   });
 };
 
-export const checkJwtIdInCache = async (jwtId: string): Promise<boolean> => {
+export const checkJwtIdInCache = async (
+  jwtId: string
+): Promise<string | null> => {
   return new Promise((resolve, reject) => {
     client.get(jwtId, (err, reply) => {
       if (err) return reject(err);
-      return resolve(Boolean(reply));
+      return resolve(reply);
     });
   });
 };

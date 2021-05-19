@@ -9,7 +9,6 @@ declare namespace Express {
       createdAt: string;
       updatedAt: string;
       jwtId: string;
-      iat: number;
     };
   }
 }

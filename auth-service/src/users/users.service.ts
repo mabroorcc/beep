@@ -41,6 +41,10 @@ export const getUserByEmail = async (email: string) => {
   return UsersEntity.findOne({ email });
 };
 
+export const getUserById = async (id: string) => {
+  return UsersEntity.findOne({ id });
+};
+
 export const getUsersByUserName = async (userName: string) => {
   return UsersEntity.getRepository()
     .createQueryBuilder()

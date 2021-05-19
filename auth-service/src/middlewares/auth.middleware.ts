@@ -3,6 +3,8 @@ import { StatusCodes } from "http-status-codes";
 import * as Responder from "../responder";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../credentials";
+import { checkJwtIdInCache } from "../cache/jwtId.cache";
+import { getUserById } from "../users/users.service";
 
 export interface IUserJwt {
   id: string;
@@ -13,29 +15,50 @@ export interface IUserJwt {
   createdAt: string;
   updatedAt: string;
   jwtId: string;
-  iat: number;
 }
 
 export interface IUserRequest extends Request {
   user: IUserJwt;
 }
 
-const authMiddleWare = (
+const authMiddleWare = async (
   req: IUserRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const auth = req.cookies.auth;
+  const token = req.cookies.auth;
 
-  if (!auth) {
+  console.log("token", token);
+
+  if (!token) {
     return Responder.Error(res, StatusCodes.OK, "Please login first!");
   }
 
   try {
-    const user = jwt.verify(auth, JWT_SECRET);
-    req.user = user as IUserJwt;
+    const key = jwt.verify(token, JWT_SECRET);
+
+    console.log("cachekey", key);
+
+    if (typeof key !== "string") return next("Please login!");
+
+    const uid = await checkJwtIdInCache(key);
+
+    console.log("uid", uid);
+
+    if (!uid) return next("Please login again");
+
+    const user = await getUserById(uid);
+
+    console.log("user", user);
+
+    if (!user) return next("Please login again");
+
+    req.user = { ...user, jwtId: key };
+
+    console.log("req.user", req.user);
     next();
   } catch (e) {
+    console.log("error", e);
     Responder.Error(res, StatusCodes.BAD_REQUEST, "Please login first!");
   }
 };
