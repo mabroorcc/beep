@@ -50,7 +50,7 @@ export const getUsersByUserName = async (userName: string) => {
     .createQueryBuilder()
     .select()
     .where('"userName" ILIKE :userName', { userName: `%${userName}%` })
-    .limit(10)
+    .limit(5)
     .getMany();
 };
 

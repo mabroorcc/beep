@@ -1,4 +1,4 @@
-import SocketIo, { Socket } from "socket.io";
+import SocketIo from "socket.io";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import axios from "axios";
@@ -24,7 +24,6 @@ export const AuthServiceUrl =
 io.use(async (socket, next) => {
   const token = socket.handshake.auth.jwtId;
   const user = socket.handshake.auth.user;
-
   if (!user) {
     next(new Error("Invalid credentials!"));
   }

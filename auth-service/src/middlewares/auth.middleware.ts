@@ -28,8 +28,6 @@ const authMiddleWare = async (
 ) => {
   const token = req.cookies.auth;
 
-  console.log("token", token);
-
   if (!token) {
     return Responder.Error(res, StatusCodes.OK, "Please login first!");
   }
@@ -37,25 +35,18 @@ const authMiddleWare = async (
   try {
     const key = jwt.verify(token, JWT_SECRET);
 
-    console.log("cachekey", key);
-
     if (typeof key !== "string") return next("Please login!");
 
     const uid = await checkJwtIdInCache(key);
-
-    console.log("uid", uid);
 
     if (!uid) return next("Please login again");
 
     const user = await getUserById(uid);
 
-    console.log("user", user);
-
     if (!user) return next("Please login again");
 
     req.user = { ...user, jwtId: key };
 
-    console.log("req.user", req.user);
     next();
   } catch (e) {
     console.log("error", e);
