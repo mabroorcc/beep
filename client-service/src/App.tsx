@@ -5,25 +5,34 @@ import { LoginPage } from "./pages/login";
 import theme from "./features/Theme";
 import { MuiThemeProvider } from "@material-ui/core";
 import { CssBaseline } from "@material-ui/core";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { getLogedUserAsync, selectUser } from "./features/user/userSlice";
-import {
-  CreateUserName,
-  CHANGE_USER_NAME_PAGE_PATH,
-} from "./pages/ChangeUserName";
 import { ChangeProfile, CHANGE_PROFILE_PAGE_PATH } from "./pages/ChangeProfile";
 import { ExpandedComponenet } from "./features/ExpandedComponenet";
+import {
+  ChangeUserDetails,
+  CHANGE_USER_DETAILS_PAGE_PATH,
+} from "./pages/ChangeUserDetails";
+import { Socket, io } from "socket.io-client";
+import { BeepSocket } from "./features/BeepSocket";
+import { PageComponenet } from "./features/PageComponent";
 
 function App() {
   const location = useLocation();
-
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
+  const [beepSocket, setBeepSocket] = useState<Socket>();
 
   useEffect(() => {
     if (!user) dispatch(getLogedUserAsync());
-  });
+    if (user) {
+      const socket = io("http://localhost:4003", {
+        auth: { user: user, jwtId: user.jwtId },
+      });
+      setBeepSocket(socket);
+    }
+  }, [user]);
 
   return (
     <MuiThemeProvider theme={theme}>
@@ -32,11 +41,13 @@ function App() {
         <Switch location={location} key={location.pathname}>
           {user && (
             <>
-              <Route exact path={HOME_PAGE_PATH} component={HomePage} />
+              <BeepSocket.Provider value={beepSocket}>
+                <Route exact path={HOME_PAGE_PATH} component={HomePage} />
+              </BeepSocket.Provider>
               <Route
                 exact
-                path={CHANGE_USER_NAME_PAGE_PATH}
-                component={CreateUserName}
+                path={CHANGE_USER_DETAILS_PAGE_PATH}
+                component={ChangeUserDetails}
               />
               <Route
                 exact
@@ -46,7 +57,11 @@ function App() {
               <Route
                 path="*"
                 render={() => (
-                  <ExpandedComponenet center>404 not found</ExpandedComponenet>
+                  <PageComponenet duration={0.3} enter="middle" leave="left">
+                    <ExpandedComponenet center>
+                      404 not found
+                    </ExpandedComponenet>
+                  </PageComponenet>
                 )}
               />
             </>

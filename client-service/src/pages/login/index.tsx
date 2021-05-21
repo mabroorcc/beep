@@ -10,7 +10,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../../features/user/userSlice";
 import { HOME_PAGE_PATH } from "../home";
 import { useHistory } from "react-router-dom";
-import { CHANGE_USER_NAME_PAGE_PATH } from "../ChangeUserName";
+import { CHANGE_USER_DETAILS_PAGE_PATH } from "../ChangeUserDetails";
 
 export interface Props {}
 
@@ -24,7 +24,7 @@ export const LoginPage: React.FC<Props> = () => {
   useEffect(() => {
     const newuser = document.cookie.split("=")[1] === "true";
     if (user && !newuser) return history.push(HOME_PAGE_PATH);
-    if (newuser) history.push(CHANGE_USER_NAME_PAGE_PATH);
+    if (newuser) history.push(CHANGE_USER_DETAILS_PAGE_PATH);
   }, []);
 
   const handleLogin = () => {

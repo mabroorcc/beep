@@ -21,12 +21,13 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import { CHANGE_PROFILE_PAGE_PATH } from "../ChangeProfile";
 import { jsonReq } from "../../features/JSON";
 import { LOGIN_PAGE_PATH } from "../login";
+import { HOME_PAGE_PATH } from "../home";
 
 export interface Props {}
 
-export const CHANGE_USER_NAME_PAGE_PATH = "/settings/user";
+export const CHANGE_USER_DETAILS_PAGE_PATH = "/change/userdetails";
 
-export const CreateUserName: React.FC<Props> = () => {
+export const ChangeUserDetails: React.FC<Props> = () => {
   const [userName, setUserName] = useState("");
   const [fullName, setFullName] = useState("");
   const [userError, setUserError] = useState(false);
@@ -64,32 +65,25 @@ export const CreateUserName: React.FC<Props> = () => {
 
   const changeDetails = async () => {
     if (!user) {
-      console.log("user end");
-      return;
-      //return history.push(LOGIN_PAGE_PATH);
+      return history.push(HOME_PAGE_PATH);
     }
-
-    let changed = false;
 
     try {
       if (user.userName !== userName) {
-        const response = await changeUserName();
-        if (response.ok) changed = true;
-        console.log(await response.json());
+        await changeUserName();
       }
       if (user.name !== fullName) {
-        const response = await changeName();
-        if (response.ok) changed = true;
-        console.log(await response.json());
+        await changeName();
       }
       dispatch(setUserNameAct(userName));
       dispatch(setFullNameAct(fullName));
-      console.log("changed");
-      //history.goBack();
+      const newuser = document.cookie.split("=")[1] === "true";
+      if (newuser) history.push(CHANGE_PROFILE_PAGE_PATH);
+      history.goBack();
     } catch (e) {
       console.log(e);
       // here changing details failed for some reason
-      //history.goBack();
+      history.goBack();
     }
   };
 
@@ -110,7 +104,7 @@ export const CreateUserName: React.FC<Props> = () => {
     <PageComponenet duration={0.2} enter="middle" leave="left">
       <BeepTopLeftLogo />
       <div style={{ ...styles.root }}>
-        <Container style={{ ...styles.container }} width="20rem" height="10rem">
+        <Container style={{ ...styles.container }} width="20rem" height="15rem">
           <Typography className={classes.typo} variant="h6">
             User Details
           </Typography>

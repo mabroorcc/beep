@@ -21,22 +21,24 @@ const initialState: UserState = {
   user: undefined,
 };
 
-export const getLogedUserAsync = createAsyncThunk(
-  "user/getLogedInUser",
-  async () => {
-    try {
-      const res = await fetch("http://localhost:4000/auth/a/current/user");
-      if (res.ok) {
-        const json = await res.json();
-        if (json.payload && json.payload.user) return json.payload.user;
-        return undefined;
-      }
-      return undefined;
-    } catch (e) {
-      console.log(e);
+export const getCurrentUser = async () => {
+  try {
+    const res = await fetch("http://localhost:4000/auth/a/current/user");
+    if (res.ok) {
+      const json = await res.json();
+      if (json.payload && json.payload.user) return json.payload.user as User;
       return undefined;
     }
+    return undefined;
+  } catch (e) {
+    console.log(e);
+    return undefined;
   }
+};
+
+export const getLogedUserAsync = createAsyncThunk(
+  "user/getLogedInUser",
+  getCurrentUser
 );
 
 export const UserSlice = createSlice({

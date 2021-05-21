@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { Container } from "../Container";
 import { selectUser } from "../user/userSlice";
-import CheckIcon from "@material-ui/icons/Check";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import { makeStyles } from "@material-ui/core";
+import WifiIcon from "@material-ui/icons/Wifi";
+import WifiOffIcon from "@material-ui/icons/WifiOff";
 
 export interface Props {}
 
@@ -22,9 +23,11 @@ export const UserAvatarGroup: React.FC<Props> = () => {
       return str;
     }
   };
+
   const getUserName = () => {
     return getFirstNChars(user.userName, 15);
   };
+
   const getName = () => {
     return getFirstNChars(user.name, 15);
   };
@@ -60,7 +63,7 @@ export const UserAvatarGroup: React.FC<Props> = () => {
           setSelected(!selected);
         }}
       >
-        <CheckIcon />
+        {selected ? <WifiIcon /> : <WifiOffIcon />}
       </ToggleButton>
     </Container>
   );

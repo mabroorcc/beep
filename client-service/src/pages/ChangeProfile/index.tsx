@@ -19,7 +19,7 @@ import { jsonReq } from "../../features/JSON";
 
 export interface Props {}
 
-export const CHANGE_PROFILE_PAGE_PATH = "/changeprofile";
+export const CHANGE_PROFILE_PAGE_PATH = "/change/profile";
 
 export const ChangeProfile: React.FC<Props> = () => {
   const user = useAppSelector(selectUser);
@@ -30,6 +30,7 @@ export const ChangeProfile: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const classes = useStyles();
+
   const {
     crop,
     zoom,
