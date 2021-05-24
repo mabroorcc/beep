@@ -17,11 +17,9 @@ import { useHistory } from "react-router-dom";
 import { uploadFileAction } from "../../features/FileUpload/uploadSlice";
 import { jsonReq } from "../../features/JSON";
 
-export interface Props {}
-
 export const CHANGE_PROFILE_PAGE_PATH = "/change/profile";
 
-export const ChangeProfile: React.FC<Props> = () => {
+export const ChangeProfile: React.FC = () => {
   const user = useAppSelector(selectUser);
   const [hoveringOverInput, setHoveringOverInput] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
