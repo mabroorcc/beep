@@ -31,14 +31,8 @@ export const ChangeProfile: React.FC<Props> = () => {
   const history = useHistory();
   const classes = useStyles();
 
-  const {
-    crop,
-    zoom,
-    setCrop,
-    onCropComplete,
-    setZoom,
-    doneWithCropping,
-  } = useChangeProfile(imageSrc);
+  const { crop, zoom, setCrop, onCropComplete, setZoom, doneWithCropping } =
+    useChangeProfile(imageSrc);
 
   useEffect(() => {
     if (user) {
@@ -86,6 +80,7 @@ export const ChangeProfile: React.FC<Props> = () => {
         dispatch(setProfileAct(arg));
 
         if (res.ok && newuser) {
+          document.cookie = "newuser=false;";
           return history.push(HOME_PAGE_PATH);
         }
         return history.goBack();

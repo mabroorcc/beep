@@ -20,7 +20,6 @@ import * as globalStyle from "../../styles";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { CHANGE_PROFILE_PAGE_PATH } from "../ChangeProfile";
 import { jsonReq } from "../../features/JSON";
-import { LOGIN_PAGE_PATH } from "../login";
 import { HOME_PAGE_PATH } from "../home";
 
 export interface Props {}
@@ -78,7 +77,7 @@ export const ChangeUserDetails: React.FC<Props> = () => {
       dispatch(setUserNameAct(userName));
       dispatch(setFullNameAct(fullName));
       const newuser = document.cookie.split("=")[1] === "true";
-      if (newuser) history.push(CHANGE_PROFILE_PAGE_PATH);
+      if (newuser) return history.push(CHANGE_PROFILE_PAGE_PATH);
       history.goBack();
     } catch (e) {
       console.log(e);

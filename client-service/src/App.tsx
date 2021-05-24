@@ -25,7 +25,9 @@ function App() {
   const [beepSocket, setBeepSocket] = useState<Socket>();
 
   useEffect(() => {
-    if (!user) dispatch(getLogedUserAsync());
+    if (!user) {
+      dispatch(getLogedUserAsync());
+    }
     if (user) {
       const socket = io("http://localhost:4003", {
         auth: { user: user, jwtId: user.jwtId },

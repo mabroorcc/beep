@@ -21,9 +21,12 @@ const paneSlice = createSlice({
     goToAddChatPane: (state) => {
       state.CurrentPane = RightPanes.ADD_CHAT_PANE;
     },
+    goToNewChatPane: (state) => {
+      state.CurrentPane = RightPanes.NEW_CHAT_PANE;
+    },
   },
 });
 
 export const selectCurrentPane = (state: RootState) => state.pane.CurrentPane;
-export const { goToAddChatPane } = paneSlice.actions;
+export const { goToAddChatPane, goToNewChatPane } = paneSlice.actions;
 export default paneSlice.reducer;

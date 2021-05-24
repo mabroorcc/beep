@@ -1,57 +1,75 @@
-import { makeStyles, TextField } from "@material-ui/core";
-import { useState } from "react";
+import { IconButton, makeStyles, TextField } from "@material-ui/core";
+import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
+import CloseIcon from "@material-ui/icons/Close";
 import { ExpandedComponenet } from "../../ExpandedComponenet";
-import { jsonReq } from "../../JSON";
 import { ImageSect } from "./ImgSect";
-import { TUser } from "../../user/types";
+import { UserListing } from "../../UserListing";
+import { SelectedListing } from "../../SelectedListing";
+import { useAddChatPane } from "./useAddChatPane";
 
 export interface Props {}
 
 export const AddChatPane: React.FC<Props> = () => {
   const classes = useStyles();
-  const [image, setImage] = useState("http://picsum.photos/400/400");
-  const [userResults, setUserResults] = useState<TUser[]>();
-
-  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const userName = e.target.value;
-    if (userName.length < 7) return;
-    const response = await searchUsersWithUserName(userName);
-    if (response.ok) {
-      const { payload } = await response.json();
-      setUserResults(payload.users as TUser[]);
-      console.log(userResults);
-    }
-  };
+  const {
+    image,
+    setImage,
+    setBlobImage,
+    chatname,
+    setChatName,
+    selectedUsers,
+    handleSearch,
+    userResults,
+    handleCancelBtn,
+    handleDoneBtn,
+    handleDeleteSelected,
+    onAddMemberHandler,
+  } = useAddChatPane();
 
   return (
     <ExpandedComponenet center>
       <div className={classes.main}>
-        <ImageSect image={image} setImage={setImage} />
+        <ImageSect image={image} setBlob={setBlobImage} setImage={setImage} />
         <TextField
+          autoComplete="off"
+          value={chatname}
+          onChange={(e) => {
+            setChatName(e.target.value);
+          }}
           className={classes.input}
           id="chat-name"
           label="Chat Name"
           variant="outlined"
         />
-        <div className={classes.memberChips}></div>
+        {selectedUsers.length > 0 && (
+          <SelectedListing
+            users={selectedUsers}
+            onDelete={handleDeleteSelected}
+          />
+        )}
         <TextField
+          autoComplete="off"
           onChange={handleSearch}
           className={classes.input}
           id="member-name"
           label="Search Members"
           variant="outlined"
         />
+        {userResults && (
+          <UserListing users={userResults} onAddHandler={onAddMemberHandler} />
+        )}
+        <div className={classes.action_container}>
+          <IconButton onClick={handleCancelBtn} className={classes.btn}>
+            <CloseIcon />
+          </IconButton>
+          {selectedUsers.length > 0 && (
+            <IconButton onClick={handleDoneBtn} className={classes.btn}>
+              <DoneOutlineIcon />
+            </IconButton>
+          )}
+        </div>
       </div>
-      <div className={classes.userListings}></div>
     </ExpandedComponenet>
-  );
-};
-
-const searchUsersWithUserName = async (userName: string) => {
-  return jsonReq(
-    `http://localhost:4000/auth/users/find/username/${userName}`,
-    "get",
-    null
   );
 };
 
@@ -60,12 +78,21 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    width: "20rem",
+    maxHeight: "80%",
+    overflowY: "scroll",
+    paddingRight: "10px",
   },
   input: {
     marginBottom: "1rem",
     backgroundColor: "#23212A",
-    width: "20rem",
+    width: "100%",
   },
-  memberChips: {},
-  userListings: {},
+  action_container: {
+    width: "100%",
+    textAlign: "right",
+  },
+  btn: {
+    margin: "1rem 0",
+  },
 });

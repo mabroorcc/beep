@@ -46,7 +46,12 @@ export const UserAvatarGroup: React.FC<Props> = () => {
       height="5rem"
     >
       <img
-        style={{ borderRadius: "50%", width: "3rem", height: "3rem" }}
+        style={{
+          borderRadius: "50%",
+          width: "3rem",
+          height: "3rem",
+          objectFit: "cover",
+        }}
         src={user.picture}
       />
       <Container width="auto" height="2.5rem">

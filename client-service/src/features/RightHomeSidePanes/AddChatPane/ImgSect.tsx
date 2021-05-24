@@ -8,9 +8,14 @@ import { ExpandedComponenet } from "../../ExpandedComponenet";
 interface ImageSectProps {
   image: string;
   setImage: any;
+  setBlob: any;
 }
 
-export const ImageSect: React.FC<ImageSectProps> = ({ image, setImage }) => {
+export const ImageSect: React.FC<ImageSectProps> = ({
+  image,
+  setImage,
+  setBlob,
+}) => {
   const [hoveringOverInput, setHoveringOverInput] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const classes = useStyles();
@@ -19,6 +24,7 @@ export const ImageSect: React.FC<ImageSectProps> = ({ image, setImage }) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
     if (!file) return;
+    setBlob(file.slice());
     setImage(URL.createObjectURL(file));
   };
 
@@ -68,6 +74,7 @@ export const ImageSect: React.FC<ImageSectProps> = ({ image, setImage }) => {
           image={image}
           onComplete={(img) => {
             setImage(img.sourced);
+            setBlob(img.blob);
             setEditMode(false);
           }}
         />
