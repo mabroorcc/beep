@@ -17,10 +17,10 @@ export const InjectApiTo = (socket: Socket) => {
     connections.delete(thisUserId);
   });
 
-  socket.on(O.CREATE_CHAT, async ({ ownerId, name }, fn) => {
-    if (!ownerId || !name) return fn("invalid params");
+  socket.on(O.CREATE_CHAT, async ({ ownerId, name, picture }, fn) => {
+    if (!ownerId || !name || !picture) return fn("invalid params");
     try {
-      const chat = await ChatsService.createChat(ownerId, name);
+      const chat = await ChatsService.createChat(ownerId, name, picture);
       fn(chat);
     } catch (e) {
       fn(e);

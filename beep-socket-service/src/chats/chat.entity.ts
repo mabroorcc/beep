@@ -15,6 +15,9 @@ export class Chats extends BaseEntity {
   @Column()
   name: string;
 
+  @Column()
+  picture: string;
+
   @Index()
   @Column()
   ownerId: string;
