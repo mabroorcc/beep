@@ -1,36 +1,30 @@
-import { IconButton, makeStyles, Typography } from "@material-ui/core";
+import { IconButton, makeStyles } from "@material-ui/core";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { BeepTopLeftLogo } from "../../features/BeepTopLeftLogo";
-import { Container } from "../../features/Container";
+import { EditImageComponent } from "../../features/EditImageComponent";
 import { ExpandedComponenet } from "../../features/ExpandedComponenet";
-import Cropper from "react-easy-crop";
 import { PageComponenet } from "../../features/PageComponent";
+import DoneIcon from "@material-ui/icons/Done";
+import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
 import { selectUser, setProfileAct } from "../../features/user/userSlice";
 import EditIcon from "@material-ui/icons/Edit";
-import CancelIcon from "@material-ui/icons/Cancel";
-import DoneIcon from "@material-ui/icons/Done";
-import { useEffect, useState } from "react";
-import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
-import { useChangeProfile } from "./useChangeProfile";
-import { HOME_PAGE_PATH } from "../home";
-import { useHistory } from "react-router-dom";
 import { uploadFileAction } from "../../features/FileUpload/uploadSlice";
 import { jsonReq } from "../../features/JSON";
+import { HOME_PAGE_PATH } from "../home";
+import { useHistory } from "react-router-dom";
 
 export const CHANGE_PROFILE_PAGE_PATH = "/change/profile";
 
 export const ChangeProfile: React.FC = () => {
-  const user = useAppSelector(selectUser);
-  const [hoveringOverInput, setHoveringOverInput] = useState(false);
-  const [imageSrc, setImageSrc] = useState("");
-  const [imageBlob, setImageBlob] = useState<Blob>();
-  const [editMode, setEditingMode] = useState(false);
-  const dispatch = useAppDispatch();
-  const history = useHistory();
   const classes = useStyles();
-
-  const { crop, zoom, setCrop, onCropComplete, setZoom, doneWithCropping } =
-    useChangeProfile(imageSrc);
+  const user = useAppSelector(selectUser);
+  const dispatch = useAppDispatch();
+  const [imageSrc, setImageSrc] = useState("");
+  const [imageBlob, setImageBlob] = useState(new Blob());
+  const [changedImage, setChangedImage] = useState(false);
+  const [hovering, setHovering] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     if (user) {
@@ -43,183 +37,178 @@ export const ChangeProfile: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
-    setImageBlob(file);
+    if (!file) return;
+    setChangedImage(true);
+    setImageBlob(file.slice());
     setImageSrc(URL.createObjectURL(file));
   };
 
-  const handleEdit = () => {
-    setEditingMode(true);
+  const handleDoneClick = () => {
+    ifNewUserThenSetToFalse();
+    if (changedImage) {
+      // upload the image first
+      dispatch(
+        uploadFileAction("profile", imageBlob, (picture) => {
+          requestToChangeProfile(picture)
+            .then(() => {
+              dispatch(setProfileAct(picture));
+              history.push(HOME_PAGE_PATH);
+            })
+            .catch((e) => {
+              history.push(HOME_PAGE_PATH);
+              console.log(e);
+            });
+        })
+      );
+    } else {
+      // moveon
+      history.push(HOME_PAGE_PATH);
+    }
   };
 
-  const handleCancelEdit = () => {
-    setEditingMode(false);
-  };
-
-  const handleDoneEdit = async () => {
-    const result = await doneWithCropping();
-    setImageSrc(result.sourced);
-    setImageBlob(result.blob);
-    setEditingMode(false);
-  };
-
-  const changeUserProfile = async (url: string) => {
+  const requestToChangeProfile = async (picture: string) => {
     return jsonReq("http://localhost:4000/auth/users/change/picture", "post", {
-      picture: url,
+      picture,
     });
   };
 
-  const handleFinalizeUpload = () => {
-    dispatch(
-      uploadFileAction("profilePic", imageBlob as Blob, async (arg) => {
-        const res = await changeUserProfile(arg);
-        const newuser = document.cookie.split("=")[1] === "true";
-
-        // updateing the state
-        dispatch(setProfileAct(arg));
-
-        if (res.ok && newuser) {
-          document.cookie = "newuser=false;";
-          return history.push(HOME_PAGE_PATH);
-        }
-        return history.goBack();
-      })
-    );
-  };
-
-  const handleCancelImageChange = () => {
-    history.push(HOME_PAGE_PATH);
+  const ifNewUserThenSetToFalse = () => {
+    const newuser = document.cookie.split("=")[1] === "true";
+    if (newuser) {
+      document.cookie = "new=false;";
+    }
   };
 
   return (
-    <PageComponenet enter="middle" leave="left" duration={0.2}>
-      <BeepTopLeftLogo />
+    <PageComponenet duration={0.4} enter="middle" leave="left">
       <ExpandedComponenet center>
-        {!editMode ? (
-          <Container
-            width="22rem"
-            height="30rem"
-            center
-            style={{ flexDirection: "column" }}
-          >
-            <Container
-              width="100%"
-              height="2rem"
-              style={{ textAlign: "right" }}
-            >
-              <IconButton onClick={handleEdit}>
-                <EditIcon />
-              </IconButton>
-            </Container>
-            <Container
-              center
-              width="200px"
-              height="200px"
-              style={styles.imageContainer()}
-            >
-              <img style={styles.image()} src={imageSrc} />
-              {hoveringOverInput && <AddProfileOverlay />}
-              <input
-                onMouseOut={() => setHoveringOverInput(false)}
-                onMouseOver={() => setHoveringOverInput(true)}
-                onChange={handleInputChange}
-                style={styles.fileInput()}
-                type="file"
-                accept="image/*"
-              />
-            </Container>
-            <Typography className={classes.typo} variant="h6" align="center">
-              Change Profile
-            </Typography>
-            <Container width="100%" height="auto" style={styles.controls()}>
-              <IconButton onClick={handleCancelImageChange} aria-label="done">
-                <CancelIcon />
-              </IconButton>
-              <IconButton onClick={handleFinalizeUpload} aria-label="done">
-                <DoneIcon />
-              </IconButton>
-            </Container>
-          </Container>
-        ) : (
-          <Container
-            width="22rem"
-            height="30rem"
-            center
-            style={{ flexDirection: "column" }}
-          >
-            <Container
-              style={styles.cropperContainer()}
-              width="20rem"
-              height="20rem"
-            >
-              <Cropper
-                image={imageSrc}
-                crop={crop}
-                zoom={zoom}
-                aspect={1}
-                onCropChange={setCrop}
-                onCropComplete={onCropComplete}
-                onZoomChange={setZoom}
-              />
-            </Container>
-            <Typography>Scroll to adjust the zoom</Typography>
-            <Container width="100%" height="auto" style={styles.controls()}>
-              <IconButton onClick={handleCancelEdit} aria-label="cancel">
-                <CancelIcon />
-              </IconButton>
-              <IconButton onClick={handleDoneEdit} aria-label="done">
-                <DoneIcon />
-              </IconButton>
-            </Container>
-          </Container>
-        )}
+        <div className={classes.main}>
+          {editMode ? (
+            <EditImageComponent
+              style={{
+                width: "100%",
+                height: "auto",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginBottom: "1rem",
+              }}
+              cropperStyles={{
+                borderRadius: "50%",
+                overflow: "hidden",
+                width: "15rem",
+                height: "15rem",
+                marginBottom: "1rem",
+              }}
+              image={imageSrc}
+              onComplete={(img) => {
+                setImageSrc(img.sourced);
+                setImageBlob(img.blob);
+                setChangedImage(true);
+                setEditMode(false);
+              }}
+            />
+          ) : (
+            <div className={classes.imgSect}>
+              <div className={classes.topactions}>
+                <IconButton onClick={() => setEditMode(true)}>
+                  <EditIcon />
+                </IconButton>
+              </div>
+              <div className={classes.icontainer}>
+                <img
+                  onMouseOver={() => setHovering(true)}
+                  className={classes.img}
+                  src={imageSrc}
+                />
+                {hovering && (
+                  <>
+                    <div className={classes.overlay}>
+                      <AddPhotoAlternateIcon />
+                    </div>
+                    <input
+                      onChange={handleInputChange}
+                      className={classes.input}
+                      onMouseLeave={() => setHovering(false)}
+                      type="file"
+                      accept="image/*"
+                    />
+                  </>
+                )}
+              </div>
+              <div className={classes.call}>
+                Confirm or click on image to change
+              </div>
+              <div className={classes.bottomAction}>
+                <IconButton onClick={handleDoneClick}>
+                  <DoneIcon />
+                </IconButton>
+              </div>
+            </div>
+          )}
+        </div>
       </ExpandedComponenet>
     </PageComponenet>
   );
 };
 
 const useStyles = makeStyles({
-  typo: {
-    fontWeight: "normal",
+  main: {
+    width: "20rem",
+    height: "auto",
+  },
+  imgSect: {
+    width: "100%",
+    height: "30rem",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  icontainer: {
+    width: "10rem",
+    height: "10rem",
+    borderRadius: "50%",
+    overflow: "hidden",
+    position: "relative",
     marginBottom: "1rem",
   },
-});
-
-const styles: Record<string, () => React.CSSProperties> = {
-  controls: () => ({
-    textAlign: "right",
-  }),
-  fileInput: () => ({
+  img: {
+    height: "100%",
+    width: "100%",
+    objectFit: "cover",
+  },
+  overlay: {
     position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#000000aa",
+    display: "grid",
+    placeItems: "center",
+  },
+  input: {
+    position: "absolute",
+    opacity: "0",
+    top: 0,
+    left: 0,
     width: "100%",
     height: "100%",
     cursor: "pointer",
-    opacity: 0,
-  }),
-  image: () => ({
+  },
+  topactions: {
     width: "100%",
-    height: "auto",
-  }),
-  imageContainer: () => ({
-    position: "relative",
-    borderRadius: "50%",
-    overflow: "hidden",
+    textAlign: "right",
+    marginBottom: "0.5rem",
+  },
+  bottomAction: {
+    width: "100%",
+    textAlign: "right",
+  },
+  call: {
+    textAlign: "center",
+    fontSize: "1rem",
     marginBottom: "1rem",
-  }),
-  cropperContainer: () => ({
-    position: "relative",
-    marginBottom: "1rem",
-    borderRadius: "50%",
-    overflow: "hidden",
-  }),
-};
-
-function AddProfileOverlay() {
-  return (
-    <ExpandedComponenet
-      styles={{ position: "absolute", backgroundColor: "#000000a0" }}
-      center
-    >
-      <AddPhotoAlternateIcon />
-    </ExpandedComponenet>
-  );
-}
+  },
+});
