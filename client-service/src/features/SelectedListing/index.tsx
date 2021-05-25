@@ -10,7 +10,7 @@ export const SelectedListing: React.FC<Props> = ({ users, onDelete }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.sel_main + " hide_scrollbar"}>
+    <div className={classes.sel_main}>
       {users &&
         users.map((user) => {
           return (
@@ -29,8 +29,12 @@ export const SelectedListing: React.FC<Props> = ({ users, onDelete }) => {
 
 const useStyles = makeStyles({
   sel_main: {
-    width: "100%",
+    minWidth: "100%",
+    minHeight: "2.5rem",
     overflowX: "scroll",
+    overflowY: "hidden",
     marginBottom: "1rem",
+    display: "flex",
+    alignItems: "center",
   },
 });

@@ -37,60 +37,62 @@ export const { setUploading, setProgress, addFile } = UploadSlice.actions;
 export default UploadSlice.reducer;
 export const selectUpload = (state: RootState) => state.upload;
 
-export const uploadFileAction = (
-  fileName: string,
-  file: Blob,
-  onFinishUpload: (url: string) => void
-): AppThunk => async (dispatch, getState) => {
-  const user = getState().user.user;
+export const uploadFileAction =
+  (
+    fileName: string,
+    file: Blob,
+    onFinishUpload: (url: string) => void
+  ): AppThunk =>
+  async (dispatch, getState) => {
+    const user = getState().user.user;
 
-  if (!user) return;
+    if (!user) return;
 
-  // dispatch an action to connect to file server
-  const fsSocket = io("http://localhost:4002", {
-    auth: { jwtId: user.jwtId, user: user },
-  });
-
-  dispatch(setUploading(true));
-  dispatch(setProgress(0));
-
-  fsSocket.on("file-channel", (chan) => {
-    // updating the progress state
-    fsSocket.on(chan, (arg: any) => {
-      dispatch(setProgress(arg));
+    // dispatch an action to connect to file server
+    const fsSocket = io("http://localhost:4002", {
+      auth: { jwtId: user.jwtId, user: user },
     });
 
-    // split the file and start sending the files on this channel
-    let chunkSize = 100000;
-    splitBlob(0, chunkSize, file, (part) => {
-      fsSocket.emit(chan, part);
+    dispatch(setUploading(true));
+    dispatch(setProgress(0));
+
+    fsSocket.on("file-channel", (chan) => {
+      // updating the progress state
+      fsSocket.on(chan, (arg: any) => {
+        dispatch(setProgress(arg));
+      });
+
+      // split the file and start sending the files on this channel
+      let chunkSize = 100000;
+      splitBlob(0, chunkSize, file, (part) => {
+        fsSocket.emit(chan, part);
+      });
     });
-  });
 
-  // log
-  fsSocket.on("file-error", (arg) => {
-    console.log("file-error", arg);
-  });
+    // log
+    fsSocket.on("file-error", (arg) => {
+      console.log("file-error", arg);
+    });
 
-  // log
-  fsSocket.on("upload-error", (arg) => {
-    console.log("upload-error", arg);
-  });
+    // log
+    fsSocket.on("upload-error", (arg) => {
+      console.log("upload-error", arg);
+    });
 
-  fsSocket.on("file-upload-finish", (arg) => {
-    dispatch(addFile({ fileName, url: arg }));
-    onFinishUpload(arg);
-    fsSocket.disconnect();
-  });
+    fsSocket.on("file-upload-finish", (arg) => {
+      dispatch(addFile({ fileName, url: arg }));
+      onFinishUpload(arg);
+      fsSocket.disconnect();
+    });
 
-  fsSocket.on("file-error", (arg) => console.log(arg));
+    fsSocket.on("file-error", (arg) => console.log(arg));
 
-  fsSocket.emit("file-upload", {
-    fileName: fileName,
-    fileSize: file.size,
-    chunkSize: 100000,
-  });
-};
+    fsSocket.emit("file-upload", {
+      fileName: fileName,
+      fileSize: file.size,
+      chunkSize: 100000,
+    });
+  };
 
 const splitBlob = async (
   start: number,

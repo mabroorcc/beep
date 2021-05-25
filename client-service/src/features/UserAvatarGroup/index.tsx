@@ -53,6 +53,7 @@ export const UserAvatarGroup: React.FC<Props> = () => {
           objectFit: "cover",
         }}
         src={user.picture}
+        alt="user image"
       />
       <Container width="auto" height="2.5rem">
         <div>{getName()}</div>

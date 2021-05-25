@@ -25,7 +25,7 @@ export const LoginPage: React.FC<Props> = () => {
     const newuser = document.cookie.split("=")[1] === "true";
     if (user && !newuser) return history.push(HOME_PAGE_PATH);
     if (newuser) history.push(CHANGE_USER_DETAILS_PAGE_PATH);
-  }, []);
+  }, [user, history]);
 
   const handleLogin = () => {
     window.location.replace("http://localhost:4000/auth/a/login/google");

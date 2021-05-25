@@ -40,7 +40,7 @@ export const ChangeUserDetails: React.FC<Props> = () => {
       setUserName(user.userName);
       setFullName(user.name);
     }
-  }, []);
+  }, [user]);
 
   const checkUserName = async () => {
     if (userName.length < 7) return setUserError(true);

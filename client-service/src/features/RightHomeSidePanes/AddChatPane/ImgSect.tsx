@@ -42,7 +42,7 @@ export const ImageSect: React.FC<ImageSectProps> = ({
             </IconButton>
           </div>
           <div className={classes.imgBox}>
-            <img className={classes.img} src={image} />
+            <img className={classes.img} src={image} alt="user image" />
             {hoveringOverInput && <AddProfileOverlay />}
             <input
               onChange={handleFileInputChange}
@@ -111,6 +111,7 @@ const useStyles = makeStyles({
   img: {
     width: "100%",
     height: "100%",
+    objectFit: "cover",
     borderRadius: "50%",
   },
   imgInput: {

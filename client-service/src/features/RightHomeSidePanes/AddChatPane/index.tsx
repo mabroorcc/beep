@@ -78,9 +78,9 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    overflowY: "scroll",
     width: "20rem",
     maxHeight: "80%",
-    overflowY: "scroll",
     paddingRight: "10px",
   },
   input: {

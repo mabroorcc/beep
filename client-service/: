@@ -3,10 +3,11 @@ import { jsonReq } from "../../JSON";
 import { TUser } from "../../user/types";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { goToNewChatPane } from "../paneSlice";
-import { PromisedFileUpload } from "../../FileUpload/promisedCall";
+import { uploadFileAction } from "../../FileUpload/uploadSlice";
 import { selectUser } from "../../user/userSlice";
 import { BeepSocket } from "../../BeepSocket";
 import { O } from "../../O";
+import { useHistory } from "react-router-dom";
 
 export const useAddChatPane = () => {
   const dispatch = useAppDispatch();
@@ -55,56 +56,63 @@ export const useAddChatPane = () => {
   };
 
   const createChat = async () => {
-    if (!user) return;
-    if (blobImage) {
-      PromisedFileUpload("chat-picture", blobImage)
-        .then((url) => {
-          return PromisedSocketCall(O.CREATE_CHAT, {
-            ownerId: user.id,
-            name: chatname,
-            picture: url,
-          });
-        })
-        .then((chat) => {
-          if (chat.id) {
-            console.log("from useAddChat/createChat", chat);
-            addMembersToChat(chat);
-            dispatch(goToNewChatPane());
-          }
-        })
-        .catch(() => console.log("error fileupload creatChat"));
+    if (!user) {
+      dispatch(goToNewChatPane());
     } else {
-      PromisedSocketCall(O.CREATE_CHAT, {
-        ownerId: user.id,
-        name: chatname,
-        picture: image,
-      })
-        .then((chat) => {
-          if (chat.id) {
-            addMembersToChat(chat.id);
-          }
-          console.log("TODO-createchat/: change to the added chat later");
-          dispatch(goToNewChatPane());
-        })
-        .catch(() => {
-          dispatch(goToNewChatPane());
-          console.log("err at promisedcall/createchat");
-        });
-    }
-  };
-
-  const addMembersToChat = (chatId: string) => {
-    for (let member of selectedUsers) {
-      addThisMemberToChat(chatId, member.id)
-        .then(() => console.log("added " + member.id + " to chat " + chatId))
-        .catch(() =>
-          console.log("failed to add member " + member.id + " to chat")
+      if (blobImage) {
+        dispatch(
+          uploadFileAction("chat-picture", blobImage, async (picture) => {
+            try {
+              const chat = await PromisedSocketCall(O.CREATE_CHAT, {
+                ownerId: user.id,
+                name: chatname,
+                picture,
+              });
+              if (chat.id) {
+                console.log("from useAddChat/createChat", chat);
+                addMembersToChat(chat, (res) => console.log(res));
+              }
+            } catch (e) {
+              console.log(e);
+            }
+          })
         );
+      } else {
+        PromisedSocketCall(O.CREATE_CHAT, {
+          ownerId: user.id,
+          name: chatname,
+          picture: image,
+        })
+          .then((chat) => {
+            if (chat.id) {
+              addMembersToChat(chat, (res) => console.log(res));
+            }
+          })
+          .catch(() => console.log("err at promisedcall/createchat"));
+      }
     }
   };
 
-  const addThisMemberToChat = (chatId: string, memberId: string) => {
-    return PromisedSocketCall(O.ADD_MEMBER_TO_CHAT, { chatId, memberId });
+  const addMembersToChat = (chat: any, onMemberAdded: (res: any) => void) => {
+    let currentMember = 0;
+    PromisedSocketCall(O.ADD_MEMBER_TO_CHAT, {
+      chatId: chat.id,
+      memberId: selectedUsers[0].id,
+    })
+      .then((res) => {
+        onMemberAdded(res);
+        const nextUser = selectedUsers[currentMember + 1];
+        if (nextUser) {
+          const nextMemberId = nextUser.id;
+          return PromisedSocketCall(O.ADD_MEMBER_TO_CHAT, {
+            chatId: chat.id,
+            memberId: nextMemberId,
+          });
+        } else {
+          return;
+        }
+      })
+      .catch((e) => console.log(e));
   };
 
   const PromisedSocketCall = async (

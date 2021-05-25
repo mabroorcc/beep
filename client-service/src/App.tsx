@@ -34,7 +34,7 @@ function App() {
       });
       setBeepSocket(socket);
     }
-  }, [user]);
+  }, [user, dispatch]);
 
   return (
     <MuiThemeProvider theme={theme}>

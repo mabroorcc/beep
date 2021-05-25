@@ -30,7 +30,7 @@ export const ChangeProfile: React.FC = () => {
     if (user) {
       setImageSrc(user.picture);
     }
-  }, []);
+  }, [user]);
 
   if (!user) return <></>;
 
@@ -120,6 +120,7 @@ export const ChangeProfile: React.FC = () => {
                   onMouseOver={() => setHovering(true)}
                   className={classes.img}
                   src={imageSrc}
+                  alt="user image"
                 />
                 {hovering && (
                   <>
