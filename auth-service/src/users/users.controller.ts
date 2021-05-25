@@ -44,7 +44,7 @@ userRouter.post("/change/picture", authMiddleWare, async (req, res) => {
     );
   } catch (e) {
     console.log(e);
-    Responder.Error(res, StatusCodes.BAD_REQUEST, e.message, e);
+    Responder.Error(res, StatusCodes.INTERNAL_SERVER_ERROR, e.message, e);
   }
 });
 
