@@ -144,6 +144,21 @@ userRouter.get("/find/email/:email", async (req, res) => {
   }
 });
 
+userRouter.get("/find/user/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      Responder.Error(res, StatusCodes.BAD_REQUEST, "Please provide id");
+    }
+
+    const user = await userService.getUserById(id);
+
+    Responder.Success(res, 200, "user found", { user });
+  } catch (e) {
+    Responder.Error(res, 500, e.message);
+  }
+});
+
 userRouter.get("/find/username/:username", async (req, res) => {
   try {
     const username = req.params.username;

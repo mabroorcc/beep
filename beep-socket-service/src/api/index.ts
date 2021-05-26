@@ -1,4 +1,5 @@
 import { Socket } from "socket.io";
+import { Chats } from "../chats/chat.entity";
 import { ChatsService } from "../chats/chat.service";
 import { MemberService } from "../members/members.service";
 import { MessageService } from "../messages/messages.service";
@@ -17,13 +18,16 @@ export const InjectApiTo = (socket: Socket) => {
     connections.delete(thisUserId);
   });
 
-  socket.on(O.CREATE_CHAT, async ({ ownerId, name, picture }, fn) => {
-    if (!ownerId || !name || !picture) return fn("invalid params");
+  socket.on(O.CREATE_CHAT, async ({ ownerId, name, picture }) => {
+    if (!ownerId || !name || !picture) {
+      return socket.emit(O.CREATE_CHAT + "ERR", "Invalid Params");
+    }
     try {
       const chat = await ChatsService.createChat(ownerId, name, picture);
-      fn(chat);
+      await MemberService.addMemberToChat(ownerId, chat.id);
+      socket.emit(O.CREATE_CHAT + "RES", chat);
     } catch (e) {
-      fn(e);
+      socket.emit(O.CREATE_CHAT + "ERR", e.message);
     }
   });
 
@@ -37,22 +41,30 @@ export const InjectApiTo = (socket: Socket) => {
     }
   });
 
-  socket.on(O.GET_ALL_MY_CHATS, async (fn) => {
+  socket.on(O.GET_ALL_MY_CHATS, async () => {
     try {
-      const chats = await ChatsService.getAllChats(thisUserId);
-      fn(chats);
+      const memberShips = await MemberService.getAllTheMemberShips(thisUserId);
+      const chats: Chats[] = [];
+      for (let mem of memberShips) {
+        const chat = await ChatsService.getOneById(mem.chatId);
+        if (chat) chats.push(chat);
+      }
+      socket.emit(O.GET_ALL_MY_CHATS + "RES", chats);
     } catch (e) {
-      fn(e);
+      socket.emit(O.GET_ALL_MY_CHATS + "ERR", e);
     }
   });
 
-  socket.on(O.ADD_MEMBER_TO_CHAT, async ({ chatId, memberId }, fn) => {
+  socket.on(O.ADD_MEMBER_TO_CHAT, async ({ chatId, memberId }) => {
     try {
-      if (!chatId || !memberId) return fn(false);
+      if (!chatId || !memberId) {
+        return socket.emit(O.ADD_MEMBER_TO_CHAT + "ERR", "Invalid params");
+      }
       await MemberService.addMemberToChat(memberId, chatId);
-      fn("added");
+      NotificationService.notifyAddedToChat(memberId, chatId);
+      socket.emit(O.ADD_MEMBER_TO_CHAT + "RES", "added");
     } catch (e) {
-      fn(e);
+      return socket.emit(O.ADD_MEMBER_TO_CHAT + "ERR", e.message);
     }
   });
 

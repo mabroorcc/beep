@@ -4,6 +4,7 @@ import { LeftHomeSide } from "../../features/LeftHomeSide";
 import { RightHomeSide } from "../../features/RightHomeSide";
 import { useContext, useEffect, useState } from "react";
 import { BeepSocket } from "../../features/BeepSocket";
+import { injectApi } from "../../features/BeepSocket/api";
 
 export interface Props {}
 
@@ -14,7 +15,10 @@ export const HomePage: React.FC<Props> = () => {
   const beepSocket = useContext(BeepSocket);
 
   useEffect(() => {
-    if (beepSocket) setConnected(true);
+    if (beepSocket) {
+      injectApi(beepSocket);
+      setConnected(true);
+    }
     if (!beepSocket) setConnected(false);
   }, [beepSocket]);
 

@@ -40,7 +40,6 @@ export const UserAvatarGroup: React.FC<Props> = () => {
         backgroundColor: "#23212A",
         borderRadius: "0 2rem 2rem 0",
         paddingLeft: "1rem",
-        justifyContent: "space-around",
       }}
       width="100%"
       height="5rem"
@@ -55,13 +54,14 @@ export const UserAvatarGroup: React.FC<Props> = () => {
         src={user.picture}
         alt="user image"
       />
-      <Container width="auto" height="2.5rem">
+      <Container style={{ marginLeft: "1rem" }} width="auto" height="2.5rem">
         <div>{getName()}</div>
         <div style={{ fontSize: ".8rem", color: "gray", height: "1rem" }}>
           @{getUserName()}
         </div>
       </Container>
       <ToggleButton
+        style={{ marginLeft: "auto", marginRight: "1rem" }}
         className={classes.onlineBtn}
         value="check"
         selected={selected}

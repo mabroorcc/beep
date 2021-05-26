@@ -7,6 +7,7 @@ import { PromisedFileUpload } from "../FileUpload/promisedCall";
 import { selectUser } from "../user/userSlice";
 import { BeepSocket } from "../BeepSocket";
 import { O } from "../O";
+import { addChat } from "../Chats/chatsSlice";
 
 export const useAddChatPane = () => {
   const dispatch = useAppDispatch();
@@ -51,55 +52,41 @@ export const useAddChatPane = () => {
 
   const handleDeleteSelected = (user: TUser) => {
     setSelectedUsers(selectedUsers.filter((suser) => suser.id === user.id));
-    console.log(selectedUsers);
   };
 
   const createChat = async () => {
     if (!user) return;
+    let url: string = "";
     if (blobImage) {
-      PromisedFileUpload("chat-picture", blobImage)
-        .then((url) => {
-          return PromisedSocketCall(O.CREATE_CHAT, {
-            ownerId: user.id,
-            name: chatname,
-            picture: url,
-          });
-        })
-        .then((chat) => {
-          if (chat.id) {
-            console.log("from useAddChat/createChat", chat);
-            addMembersToChat(chat);
-            dispatch(goToNewChatPane());
-          }
-        })
-        .catch(() => console.log("error fileupload creatChat"));
+      url = await PromisedFileUpload("chat-picture", blobImage);
     } else {
-      PromisedSocketCall(O.CREATE_CHAT, {
-        ownerId: user.id,
-        name: chatname,
-        picture: image,
-      })
-        .then((chat) => {
-          if (chat.id) {
-            addMembersToChat(chat.id);
-          }
-          console.log("TODO-createchat/: change to the added chat later");
-          dispatch(goToNewChatPane());
-        })
-        .catch(() => {
-          dispatch(goToNewChatPane());
-          console.log("err at promisedcall/createchat");
-        });
+      url = "http://picsum.photos/400/400";
+    }
+    const chat = await createChatRequest(user.id, chatname, url);
+    if (chat.id) {
+      addMembersToChat(chat);
     }
   };
 
-  const addMembersToChat = (chatId: string) => {
+  const createChatRequest = (
+    ownerId: string,
+    name: string,
+    picture: string
+  ) => {
+    return PromisedSocketCall(O.CREATE_CHAT, {
+      ownerId,
+      name,
+      picture,
+    });
+  };
+
+  const addMembersToChat = async (chat: any) => {
     for (let member of selectedUsers) {
-      addThisMemberToChat(chatId, member.id)
-        .then(() => console.log("added " + member.id + " to chat " + chatId))
-        .catch(() =>
-          console.log("failed to add member " + member.id + " to chat")
-        );
+      await addThisMemberToChat(chat.id, member.id);
+      if (member.id === selectedUsers[selectedUsers.length - 1].id) {
+        dispatch(addChat(chat));
+        dispatch(goToNewChatPane());
+      }
     }
   };
 
@@ -112,17 +99,14 @@ export const useAddChatPane = () => {
     params: any
   ): Promise<any> => {
     return new Promise((resolve, reject) => {
-      if (beepSocket) {
-        beepSocket.emit(CODE, params, (response: any) => {
-          if (response === false) {
-            reject(false);
-          } else {
-            resolve(response);
-          }
-        });
-      } else {
-        reject(false);
-      }
+      if (!beepSocket) return reject("beep socket undefined");
+      beepSocket.on(CODE + "RES", (res: any) => {
+        resolve(res);
+      });
+      beepSocket.on(CODE + "ERR", (err: any) => {
+        reject(err);
+      });
+      beepSocket.emit(CODE, params);
     });
   };
 

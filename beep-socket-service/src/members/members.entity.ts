@@ -1,8 +1,17 @@
-import { BaseEntity, Column, Entity, Index, PrimaryColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity("members")
 export class Members extends BaseEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @Column()
   memberId: string;
 
   @Index()

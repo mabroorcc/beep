@@ -7,7 +7,9 @@ export const MemberService = {
     member.memberId = memberId;
     return member.save();
   },
-
+  getAllTheMemberShips: (memberId: string) => {
+    return Members.find({ memberId: memberId });
+  },
   getAllTheMembersOfTheChat: (chatId: string) => {
     return Members.find({ chatId });
   },

@@ -29,7 +29,7 @@ code {
 ::-webkit-scrollbar {
   width: 0.2rem;
   height: 0.2rem;
-  background-color: #191720;
+  background-color: #23212a;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -41,6 +41,6 @@ code {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 * {
-  scrollbar-color: #23212a #191720;
+  scrollbar-color: #191720 #23212a;
   scrollbar-width: thin; /* Firefox */
 }

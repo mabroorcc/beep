@@ -8,6 +8,9 @@ export const ChatsService = {
     chat.picture = picture;
     return chat.save();
   },
+  getOneById: (id: string) => {
+    return Chats.findOne({ id });
+  },
   getAllChats: (ownerId: string) => {
     return Chats.find({ ownerId });
   },

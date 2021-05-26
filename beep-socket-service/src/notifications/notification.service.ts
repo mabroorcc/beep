@@ -2,6 +2,7 @@ import { MemberService } from "../members/members.service";
 import { Messages } from "../messages/messages.entity";
 import { Socket } from "socket.io";
 import { O } from "../opcodes";
+import { ChatsService } from "../chats/chat.service";
 
 interface Notification {
   title: string;
@@ -15,7 +16,11 @@ export const NotificationService = {
   notifyAddedToChat: (idOfMember: string, chatId: string) => {
     const mem = connections.get(idOfMember);
     if (mem) {
-      mem.emit(O.ADDED_TO_CHAT, chatId);
+      ChatsService.getOneById(chatId)
+        .then((chat) => {
+          mem.emit(O.ADDED_TO_CHAT, chat);
+        })
+        .catch();
     }
   },
   notifyMessageCame: async (chatId: string, message: Messages) => {

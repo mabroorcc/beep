@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core";
+import { useEffect, useRef } from "react";
 import { ChatsHead } from "../ChatsHead";
 import { ChatsList } from "../ChatsList";
 
@@ -8,7 +9,7 @@ export const Chats: React.FC<Props> = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.main}>
+    <div id="chats-u-main" className={classes.main}>
       <ChatsHead />
       <ChatsList />
     </div>
@@ -24,6 +25,6 @@ const useStyles = makeStyles({
     borderRadius: "0 2rem 0 0",
     display: "flex",
     flexDirection: "column",
-    flexGrow: 1,
+    overflow: "hidden",
   },
 });

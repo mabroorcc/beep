@@ -69,6 +69,8 @@ services:
       BEEP_SOCKET_SERVICE_DBPORT: 5433
     ports:
       - "4003:4003"
+    volumes:
+      - ./beep-socket-service/src:/app/src
     depends_on:
       - socket-db
 
