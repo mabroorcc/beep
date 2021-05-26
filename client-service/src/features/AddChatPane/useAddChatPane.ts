@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
-import { jsonReq } from "../../JSON";
-import { TUser } from "../../user/types";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { goToNewChatPane } from "../paneSlice";
-import { PromisedFileUpload } from "../../FileUpload/promisedCall";
-import { selectUser } from "../../user/userSlice";
-import { BeepSocket } from "../../BeepSocket";
-import { O } from "../../O";
+import { jsonReq } from "../JSON";
+import { TUser } from "../user/types";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { goToNewChatPane } from "../RightHomeSidePanes/paneSlice";
+import { PromisedFileUpload } from "../FileUpload/promisedCall";
+import { selectUser } from "../user/userSlice";
+import { BeepSocket } from "../BeepSocket";
+import { O } from "../O";
 
 export const useAddChatPane = () => {
   const dispatch = useAppDispatch();

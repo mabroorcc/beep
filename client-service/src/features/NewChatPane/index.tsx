@@ -1,8 +1,8 @@
 import { Button, makeStyles } from "@material-ui/core";
-import { NewChatSvg } from "../../../assets/newChat";
+import { NewChatSvg } from "../../assets/newChat";
 import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
-import { useAppDispatch } from "../../../app/hooks";
-import { goToAddChatPane } from "../paneSlice";
+import { useAppDispatch } from "../../app/hooks";
+import { goToAddChatPane } from "../RightHomeSidePanes/paneSlice";
 
 export interface Props {}
 

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { IconButton, makeStyles } from "@material-ui/core";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
 import EditIcon from "@material-ui/icons/Edit";
-import { EditImageComponent } from "../../EditImageComponent";
-import { ExpandedComponenet } from "../../ExpandedComponenet";
+import { EditImageComponent } from "../EditImageComponent";
+import { ExpandedComponenet } from "../ExpandedComponenet";
 
 interface ImageSectProps {
   image: string;
