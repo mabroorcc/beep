@@ -9,7 +9,7 @@ export const HomeTopLogo = () => {
         justifyContent: "center",
         alignItems: "center",
         background: "#23212A",
-        borderRadius: "0 0 2rem 0",
+        borderRadius: "2rem",
         marginBottom: "1rem",
       }}
       width="100%"

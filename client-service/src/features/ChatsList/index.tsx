@@ -14,7 +14,7 @@ export const ChatsList: React.FC<Props> = () => {
   };
 
   return (
-    <div className={classes.chatlistmain}>
+    <div className={classes.chatlistmain + " customscroll"}>
       {chats &&
         chats.map((item) => {
           return (
@@ -30,5 +30,6 @@ const useStyles = makeStyles({
     margin: "0 1rem",
     height: "100%",
     paddingRight: "0.5rem",
+    overflowY: "scroll",
   },
 });

@@ -38,7 +38,7 @@ export const UserAvatarGroup: React.FC<Props> = () => {
         display: "flex",
         alignItems: "center",
         backgroundColor: "#23212A",
-        borderRadius: "0 2rem 2rem 0",
+        borderRadius: "2rem",
         paddingLeft: "1rem",
       }}
       width="100%"

@@ -1,16 +1,27 @@
-import { Container } from "../Container";
 import { HomeTopLogo } from "../HomeTopLogo";
 import { UserAvatarGroup } from "../UserAvatarGroup";
 import { Chats } from "../Chats";
+import { makeStyles } from "@material-ui/core";
 
 export interface Props {}
 
 export const LeftHomeSide: React.FC<Props> = () => {
+  const classes = useStyles();
   return (
-    <Container width="25%" height="100%">
+    <div className={classes.leftHomeSide}>
       <HomeTopLogo />
       <UserAvatarGroup />
       <Chats />
-    </Container>
+    </div>
   );
 };
+
+const useStyles = makeStyles({
+  leftHomeSide: {
+    width: "25%",
+    height: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    paddingTop: "2rem",
+  },
+});

@@ -1,11 +1,14 @@
 import { IconButton, makeStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import AddBoxIcon from "@material-ui/icons/AddBox";
+import { useAppDispatch } from "../../app/hooks";
+import { goToAddChatPane } from "../RightHomeSidePanes/paneSlice";
 
 export interface Props {}
 
 export const ChatsHead: React.FC<Props> = () => {
   const classes = useStyles();
+  const dispatch = useAppDispatch();
 
   return (
     <div className={classes.main}>
@@ -14,7 +17,7 @@ export const ChatsHead: React.FC<Props> = () => {
         <IconButton style={{ marginRight: "1rem" }} size="small">
           <SearchIcon />
         </IconButton>
-        <IconButton size="small">
+        <IconButton onClick={() => dispatch(goToAddChatPane())} size="small">
           <AddBoxIcon />
         </IconButton>
       </div>
@@ -29,5 +32,5 @@ const useStyles = makeStyles({
     justifyContent: "space-between",
     padding: "1rem",
   },
-  title: { fontSize: "1.3rem", fontWeight: "normal" },
+  title: { fontSize: "1.2rem", marginLeft: "0.5rem", fontWeight: "normal" },
 });
