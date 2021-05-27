@@ -15,9 +15,10 @@ export const SelectedListing: React.FC<Props> = ({ users, onDelete }) => {
         users.map((user) => {
           return (
             <Chip
+              style={{ marginRight: "0.4rem" }}
               key={user.id}
               variant="outlined"
-              onDelete={onDelete}
+              onDelete={() => onDelete(user)}
               label={"@" + user.userName}
               avatar={<Avatar src={user.picture} />}
             />

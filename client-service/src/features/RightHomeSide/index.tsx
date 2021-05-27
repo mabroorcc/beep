@@ -4,6 +4,7 @@ import { RightPanes } from "../RightHomeSidePanes/paneSlice";
 import { NewChatPane } from "../NewChatPane";
 import { selectCurrentPane } from "../RightHomeSidePanes/paneSlice";
 import { AddChatPane } from "../AddChatPane";
+import { OpenedChatPane } from "../OpenedChatPane";
 
 export interface Props {}
 
@@ -15,6 +16,7 @@ export const RightHomeSide: React.FC<Props> = () => {
     <div className={classes.main}>
       {CurrentPane === RightPanes.NEW_CHAT_PANE && <NewChatPane />}
       {CurrentPane === RightPanes.ADD_CHAT_PANE && <AddChatPane />}
+      {CurrentPane === RightPanes.OPENED_CHAT_PANE && <OpenedChatPane />}
     </div>
   );
 };
@@ -23,5 +25,8 @@ const useStyles = makeStyles({
   main: {
     width: "75%",
     height: "100%",
+    marginLeft: "1rem",
+    marginRight: "1rem",
+    marginTop: "2rem",
   },
 });

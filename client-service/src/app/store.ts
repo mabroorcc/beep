@@ -4,6 +4,7 @@ import loadingReducer from "../features/LoadingBackdrop/loadingSlice";
 import uploadReducer from "../features/FileUpload/uploadSlice";
 import paneReducer from "../features/RightHomeSidePanes/paneSlice";
 import chatsReducer from "../features/Chats/chatsSlice";
+import openChatReducer from "../features/OpenedChatPane/openChatSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     upload: uploadReducer,
     pane: paneReducer,
     chats: chatsReducer,
+    openChat: openChatReducer,
   },
 });
 

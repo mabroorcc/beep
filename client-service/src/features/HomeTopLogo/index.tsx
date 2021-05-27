@@ -13,7 +13,7 @@ export const HomeTopLogo = () => {
         marginBottom: "1rem",
       }}
       width="100%"
-      height="4.5rem"
+      height="5rem"
     >
       <Container style={{}} width="5rem" height="auto">
         <BeepLogo></BeepLogo>

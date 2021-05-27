@@ -27,7 +27,7 @@ export const ChatListItem: React.FC<Props> = ({ chat, onClick }) => {
       <div className={classes.chatdetails}>
         <div className={classes.chatname}>{chat.name}</div>
         {owner && owner.userName && (
-          <div className={classes.owner}>By @{owner.userName}</div>
+          <div className={classes.owner}>by @{owner.userName}</div>
         )}
       </div>
     </div>

@@ -1,16 +1,18 @@
 import { makeStyles } from "@material-ui/core";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ChatListItem } from "../ChatListItem";
 import { chat, selectChats } from "../Chats/chatsSlice";
+import { goToOpenedChatPane } from "../RightHomeSidePanes/paneSlice";
 
 export interface Props {}
 
 export const ChatsList: React.FC<Props> = () => {
   const classes = useStyles();
   const chats = useAppSelector(selectChats);
+  const dispatch = useAppDispatch();
 
   const handleChatClick = (chat: chat) => {
-    console.log(chat);
+    dispatch(goToOpenedChatPane(chat));
   };
 
   return (

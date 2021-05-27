@@ -68,13 +68,15 @@ export const InjectApiTo = (socket: Socket) => {
     }
   });
 
-  socket.on(O.GET_ALL_MEMBERS_OF_CHAT, async ({ chatId }, fn) => {
-    if (!chatId) return fn(false);
+  socket.on(O.GET_ALL_MEMBERS_OF_CHAT, async ({ chatId }) => {
+    if (!chatId) {
+      return socket.emit(O.GET_ALL_MEMBERS_OF_CHAT + "ERR", "Invalid params!");
+    }
     try {
-      const members = MemberService.getAllTheMembersOfTheChat(chatId);
-      fn(members);
+      const members = await MemberService.getAllTheMembersOfTheChat(chatId);
+      socket.emit(O.GET_ALL_MEMBERS_OF_CHAT + "RES", members);
     } catch (e) {
-      fn(e);
+      socket.emit(O.GET_ALL_MEMBERS_OF_CHAT + "ERR", e.message);
     }
   });
 

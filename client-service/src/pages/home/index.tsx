@@ -6,6 +6,7 @@ import { BeepSocket } from "../../features/BeepSocket";
 import { injectApi } from "../../features/BeepSocket/api";
 import { makeStyles } from "@material-ui/core";
 import { ExpandedComponenet } from "../../features/ExpandedComponenet";
+import { SideBar } from "../../features/SideBar";
 
 export interface Props {}
 
@@ -31,6 +32,7 @@ export const HomePage: React.FC<Props> = () => {
           <div className={classes.wrapper}>
             <LeftHomeSide />
             <RightHomeSide />
+            <SideBar />
           </div>
         </ExpandedComponenet>
       ) : (

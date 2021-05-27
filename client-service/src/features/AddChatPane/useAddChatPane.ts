@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { jsonReq } from "../JSON";
 import { TUser } from "../user/types";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { goToNewChatPane } from "../RightHomeSidePanes/paneSlice";
@@ -8,6 +7,7 @@ import { selectUser } from "../user/userSlice";
 import { BeepSocket } from "../BeepSocket";
 import { O } from "../O";
 import { addChat } from "../Chats/chatsSlice";
+import { getUsersWithUserName } from "../api";
 
 export const useAddChatPane = () => {
   const dispatch = useAppDispatch();
@@ -22,19 +22,10 @@ export const useAddChatPane = () => {
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const userName = e.target.value;
     if (userName.length < 7) return;
-    const response = await searchUsersWithUserName(userName);
-    if (response.ok) {
-      const { payload } = await response.json();
-      setUserResults(payload.users as TUser[]);
+    const users = await getUsersWithUserName(userName);
+    if (users) {
+      setUserResults(users as TUser[]);
     }
-  };
-
-  const searchUsersWithUserName = async (userName: string) => {
-    return jsonReq(
-      `http://localhost:4000/auth/users/find/username/${userName}`,
-      "get",
-      null
-    );
   };
 
   const onAddMemberHandler = (member: TUser) => {
@@ -51,7 +42,7 @@ export const useAddChatPane = () => {
   };
 
   const handleDeleteSelected = (user: TUser) => {
-    setSelectedUsers(selectedUsers.filter((suser) => suser.id === user.id));
+    setSelectedUsers(selectedUsers.filter((suser) => suser.id !== user.id));
   };
 
   const createChat = async () => {
