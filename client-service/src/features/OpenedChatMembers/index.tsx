@@ -1,7 +1,7 @@
 import { Avatar, makeStyles } from "@material-ui/core";
 import AvatarGroup from "@material-ui/lab/AvatarGroup";
 import { useEffect, useState } from "react";
-import { getMembersOfTheChat } from "../api";
+import { getOnlineMembersOfTheChat } from "../api";
 import { chat } from "../Chats/chatsSlice";
 import { TUser } from "../user/types";
 
@@ -16,7 +16,7 @@ export const OpenedChatMembers: React.FC<Props> = ({ chat }) => {
   useEffect(() => {
     (async () => {
       try {
-        const members = await getMembersOfTheChat(chat.id);
+        const members = await getOnlineMembersOfTheChat(chat.id);
         setMembers(members);
       } catch (e) {
         console.log(e);
@@ -25,11 +25,12 @@ export const OpenedChatMembers: React.FC<Props> = ({ chat }) => {
   }, [chat]);
 
   return (
-    <AvatarGroup max={3}>
+    <AvatarGroup max={7}>
       {members &&
         members.map((mem) => {
           return (
             <Avatar
+              key={mem.id}
               className={classes.avSmall}
               alt={mem.userName}
               src={mem.picture}
@@ -42,7 +43,7 @@ export const OpenedChatMembers: React.FC<Props> = ({ chat }) => {
 
 const useStyles = makeStyles({
   avSmall: {
-    width: "1.6rem",
-    height: "1.6rem",
+    width: "1.5rem",
+    height: "1.5rem",
   },
 });

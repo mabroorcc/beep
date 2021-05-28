@@ -2,6 +2,7 @@ import { O } from "../O";
 import { PromisedSocketCall } from "../BeepSocket/api";
 import { jsonReq } from "../JSON";
 import { TUser } from "../user/types";
+import { Message } from "../OpenedChatPane/openChatSlice";
 
 export const getMembersOfTheChat = async (id: string) => {
   const members: any = await PromisedSocketCall(O.GET_ALL_MEMBERS_OF_CHAT, {
@@ -15,6 +16,13 @@ export const getMembersOfTheChat = async (id: string) => {
     }
   }
   return users as TUser[];
+};
+
+export const getOnlineMembersOfTheChat = async (id: string) => {
+  const members: any = await PromisedSocketCall(O.GET_ONLINE_MEMBERS_OF_CHAT, {
+    chatId: id,
+  });
+  return members as TUser[];
 };
 
 export const getUsersWithUserName = async (userName: string) => {
@@ -42,4 +50,23 @@ export const getOneUserWithId = async (id: string) => {
   } else {
     return false;
   }
+};
+
+export const getMessagesOfChat = async (chatId: string, offset?: number) => {
+  const messages = await PromisedSocketCall(O.GET_MESSAGES_OF_CHAT, {
+    chatId,
+    offset,
+  });
+  return messages as Message[];
+};
+
+interface SendMessageParams {
+  message: string;
+  chatId: string;
+  attachment?: string;
+  attType?: string;
+}
+export const sendMessageInChat = async (params: SendMessageParams) => {
+  const msg = await PromisedSocketCall(O.SEND_MESSAGE, params);
+  return msg as Message;
 };

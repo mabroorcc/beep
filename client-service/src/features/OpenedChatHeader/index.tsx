@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => {
       display: "flex",
       alignItems: "center",
       padding: "1rem",
+      marginBottom: "1rem",
     },
     avatar: {
       height: "3rem",
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => {
       height: "100%",
       display: "flex",
       flexDirection: "column",
-      justifyContent: "center",
+      justifyContent: "space-between",
     },
     name: {
       fontSize: "1rem",

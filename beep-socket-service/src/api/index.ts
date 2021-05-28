@@ -57,9 +57,7 @@ export const InjectApiTo = (socket: Socket) => {
 
   socket.on(O.ADD_MEMBER_TO_CHAT, async ({ chatId, memberId }) => {
     try {
-      if (!chatId || !memberId) {
-        return socket.emit(O.ADD_MEMBER_TO_CHAT + "ERR", "Invalid params");
-      }
+      if (!chatId || !memberId) throw new Error("Invalid params!");
       await MemberService.addMemberToChat(memberId, chatId);
       NotificationService.notifyAddedToChat(memberId, chatId);
       socket.emit(O.ADD_MEMBER_TO_CHAT + "RES", "added");
@@ -69,10 +67,8 @@ export const InjectApiTo = (socket: Socket) => {
   });
 
   socket.on(O.GET_ALL_MEMBERS_OF_CHAT, async ({ chatId }) => {
-    if (!chatId) {
-      return socket.emit(O.GET_ALL_MEMBERS_OF_CHAT + "ERR", "Invalid params!");
-    }
     try {
+      if (!chatId) throw new Error("Invalid params!");
       const members = await MemberService.getAllTheMembersOfTheChat(chatId);
       socket.emit(O.GET_ALL_MEMBERS_OF_CHAT + "RES", members);
     } catch (e) {
@@ -80,30 +76,53 @@ export const InjectApiTo = (socket: Socket) => {
     }
   });
 
-  socket.on(O.GET_MESSAGES_OF_CHAT, async ({ chatId, offset }, fn) => {
-    if (!chatId) return fn(false);
+  socket.on(O.GET_ONLINE_MEMBERS_OF_CHAT, async ({ chatId }) => {
     try {
+      if (!chatId) throw new Error("Invalid Params");
+      const members = await MemberService.getAllTheMembersOfTheChat(chatId);
+      const users = [];
+      for (let mem of members) {
+        const user = connections.get(mem.memberId);
+        if (user) {
+          users.push(user.handshake.auth.user);
+        }
+      }
+      socket.emit(O.GET_ONLINE_MEMBERS_OF_CHAT + "RES", users);
+    } catch (e) {
+      socket.emit(O.GET_ONLINE_MEMBERS_OF_CHAT + "ERR", e.message);
+    }
+  });
+
+  socket.on(O.GET_MESSAGES_OF_CHAT, async ({ chatId, offset }) => {
+    try {
+      if (!chatId) throw new Error("Invalid Params!");
       const messages = await MessageService.getMessagesOfChat(
         chatId,
         offset ? offset : 0
       );
-      fn(messages);
+      socket.emit(O.GET_MESSAGES_OF_CHAT + "RES", messages);
     } catch (e) {
-      fn(e);
+      socket.emit(O.GET_MESSAGES_OF_CHAT + "ERR", e.message);
     }
   });
 
-  socket.on(O.SEND_MESSAGE, async ({ message, chatId }, fn) => {
-    try {
-      const msg = await MessageService.sendMessageToChat(
-        message,
-        chatId,
-        thisUserId
-      );
-      NotificationService.notifyMessageCame(chatId, msg);
-      fn("sent");
-    } catch (e) {
-      fn(e);
+  socket.on(
+    O.SEND_MESSAGE,
+    async ({ message, chatId, attachment, attType }) => {
+      try {
+        if (!message || !chatId) throw new Error("Invalid params!");
+        const msg = await MessageService.sendMessageToChat(
+          message,
+          chatId,
+          thisUserId,
+          attachment,
+          attType
+        );
+        socket.emit(O.SEND_MESSAGE + "RES", msg);
+        NotificationService.notifyMessageCame(chatId, msg);
+      } catch (e) {
+        socket.emit(O.SEND_MESSAGE + "ERR", e.message);
+      }
     }
-  });
+  );
 };

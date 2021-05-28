@@ -22,6 +22,12 @@ export class Messages extends BaseEntity {
   @Column("text")
   seenBy: string;
 
+  @Column()
+  attachment: string;
+
+  @Column()
+  attType: string;
+
   @Index()
   @Column()
   senderId: string;

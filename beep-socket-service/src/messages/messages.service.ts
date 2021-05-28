@@ -1,22 +1,26 @@
+import { getManager } from "typeorm";
 import { Messages } from "./messages.entity";
 
 export const MessageService = {
   sendMessageToChat: (
     messageText: string,
     chatId: string,
-    senderId: string
+    senderId: string,
+    attachment?: string,
+    attType?: "image" | "file" | "none"
   ) => {
     const message = new Messages();
     message.chatId = chatId;
     message.message = messageText;
     message.senderId = senderId;
     message.seenBy = senderId;
+    message.attachment = attachment ? attachment : "none";
+    message.attType = attType ? attType : "none";
     return message.save();
   },
   getMessagesOfChat: (chatId: string, offset: number) => {
-    return Messages.getRepository()
-      .createQueryBuilder()
-      .select("messages")
+    return getManager()
+      .createQueryBuilder(Messages, "messages")
       .where("messages.chatId = :chatId", { chatId })
       .orderBy("messages.id", "DESC")
       .offset(offset)
@@ -26,7 +30,7 @@ export const MessageService = {
     const message = await Messages.findOne({ id });
     if (!message) return "No message found!";
     if (message.seenBy.indexOf(whoId) === -1) {
-      message.seenBy += whoId;
+      message.seenBy += `[${whoId}],`;
     }
     return message.save();
   },
