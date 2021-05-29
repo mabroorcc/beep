@@ -1,7 +1,7 @@
 import { chat } from "../Chats/chatsSlice";
 import { useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
-import { addMessagesAtBottom, Message } from "../OpenedChatPane/openChatSlice";
+import { addOpenMessages } from "../OpenedChatPane/openChatSlice";
 import { sendMessageInChat } from "../api";
 import { uploadFileAction } from "../FileUpload/uploadSlice";
 
@@ -44,7 +44,7 @@ export const useOpenedChatTextBox = (chat: chat) => {
       attachment,
       attType,
     });
-    dispatch(addMessagesAtBottom([msg]));
+    dispatch(addOpenMessages([msg]));
     setMessage("");
     setFile(undefined);
   };

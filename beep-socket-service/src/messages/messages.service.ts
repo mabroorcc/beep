@@ -24,6 +24,7 @@ export const MessageService = {
       .where("messages.chatId = :chatId", { chatId })
       .orderBy("messages.id", "DESC")
       .offset(offset)
+      .limit(100)
       .getMany();
   },
   seenMessage: async (whoId: string, id: number) => {

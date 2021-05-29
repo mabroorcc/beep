@@ -30,11 +30,8 @@ const openChatSlice = createSlice({
     setOpenChat: (state, action: PayloadAction<chat>) => {
       state.chat = action.payload;
     },
-    addMessagesAtTop: (state, action: PayloadAction<Message[]>) => {
-      state.messages = [...action.payload, ...state.messages];
-    },
-    addMessagesAtBottom: (state, action: PayloadAction<Message[]>) => {
-      state.messages = [...state.messages, ...action.payload];
+    addOpenMessages: (state, action: PayloadAction<Message[]>) => {
+      state.messages = sortByTime([...action.payload, ...state.messages]);
     },
     dumpOpenMessages: (state) => {
       state.messages = [];
@@ -42,12 +39,16 @@ const openChatSlice = createSlice({
   },
 });
 
+const sortByTime = (messages: Message[]) => {
+  return messages.slice().sort((a, b) => {
+    const AD = new Date(a.date);
+    const BD = new Date(b.date);
+    return BD.getTime() - AD.getTime();
+  });
+};
+
 export const selectOpenChat = (state: RootState) => state.openChat.chat;
 export const selectOpenMessages = (state: RootState) => state.openChat.messages;
-export const {
-  setOpenChat,
-  addMessagesAtBottom,
-  addMessagesAtTop,
-  dumpOpenMessages,
-} = openChatSlice.actions;
+export const { setOpenChat, addOpenMessages, dumpOpenMessages } =
+  openChatSlice.actions;
 export default openChatSlice.reducer;
