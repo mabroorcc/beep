@@ -43,7 +43,7 @@ const sortByTime = (messages: Message[]) => {
   return messages.slice().sort((a, b) => {
     const AD = new Date(a.date);
     const BD = new Date(b.date);
-    return BD.getTime() - AD.getTime();
+    return AD.getTime() - BD.getTime();
   });
 };
 

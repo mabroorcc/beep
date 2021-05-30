@@ -1,12 +1,15 @@
 import { makeStyles } from "@material-ui/core";
+import { AllChatMembersAvatarGroup } from "../AllChatMembersAvatarGroup";
 import { chat } from "../Chats/chatsSlice";
 import { OpenedChatMembers } from "../OpenedChatMembers";
+import { TUser } from "../user/types";
 
 export interface Props {
   chat: chat;
+  members: TUser[];
 }
 
-export const OpenedChatHeader: React.FC<Props> = ({ chat }) => {
+export const OpenedChatHeader: React.FC<Props> = ({ chat, members }) => {
   const classes = useStyles();
 
   return (
@@ -14,7 +17,11 @@ export const OpenedChatHeader: React.FC<Props> = ({ chat }) => {
       <img className={classes.avatar} src={chat.picture} />
       <div className={classes.details}>
         <div className={classes.name}>{chat.name}</div>
-        <OpenedChatMembers chat={chat} />
+        <div className={classes.members}>
+          <OpenedChatMembers chat={chat} />
+          <div style={{ margin: "0 0.5rem" }}>~</div>
+          <AllChatMembersAvatarGroup members={members} />
+        </div>
       </div>
     </div>
   );
@@ -47,6 +54,9 @@ const useStyles = makeStyles((theme) => {
     },
     name: {
       fontSize: "1rem",
+    },
+    members: {
+      display: "flex",
     },
   };
 });

@@ -6,6 +6,7 @@ import { MessageService } from "../messages/messages.service";
 import {
   NotificationService,
   connections,
+  notifications,
 } from "../notifications/notification.service";
 import { O } from "../opcodes";
 
@@ -17,6 +18,16 @@ export const InjectApiTo = (socket: Socket) => {
   socket.on("disconnect", () => {
     connections.delete(thisUserId);
   });
+
+  // sending all the notifications for that user as he gets online
+  const notifs = notifications.get(thisUserId);
+  if (notifs) {
+    notifs.forEach((notif) => {
+      socket.emit(notif.title, notif.data);
+    });
+  }
+  // clearing notifications
+  notifications.delete(thisUserId);
 
   socket.on(O.CREATE_CHAT, async ({ ownerId, name, picture }) => {
     if (!ownerId || !name || !picture) {

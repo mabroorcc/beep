@@ -10,7 +10,7 @@ interface Notification {
 }
 
 export const connections: Map<string, Socket> = new Map();
-const notifications: Map<string, Notification[]> = new Map();
+export const notifications: Map<string, Notification[]> = new Map();
 
 export const NotificationService = {
   notifyAddedToChat: (idOfMember: string, chatId: string) => {
@@ -20,7 +20,7 @@ export const NotificationService = {
         .then((chat) => {
           mem.emit(O.ADDED_TO_CHAT, chat);
         })
-        .catch();
+        .catch((e) => console.log("from Notifaction", e.message));
     }
   },
   notifyMessageCame: async (chatId: string, message: Messages) => {

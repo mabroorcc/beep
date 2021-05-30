@@ -9,12 +9,14 @@ import {
   addOpenMessages,
 } from "../OpenedChatPane/openChatSlice";
 import { OpenMessage } from "../OpenMessage";
+import { TUser } from "../user/types";
 
 export interface Props {
   chat: chat;
+  members: TUser[];
 }
 
-export const OpenedChatMessages: React.FC<Props> = ({ chat }) => {
+export const OpenedChatMessages: React.FC<Props> = ({ chat, members }) => {
   const classes = useStyles();
   const messages = useAppSelector(selectOpenMessages);
   const dispatch = useAppDispatch();
@@ -27,21 +29,25 @@ export const OpenedChatMessages: React.FC<Props> = ({ chat }) => {
     })();
   }, [chat, dispatch]);
 
+  const getSender = (id: string) => {
+    for (let mem of members) {
+      if (mem.id === id) return mem;
+    }
+  };
+
   return (
     <div className={classes.openchatmessages}>
       {messages &&
-        messages
-          .map((el) => el)
-          .reverse()
-          .map((item, i, arr) => {
-            return (
-              <OpenMessage
-                last={i === arr.length - 1 ? true : false}
-                key={item.id}
-                message={item}
-              />
-            );
-          })}
+        messages.map((item, i, arr) => {
+          return (
+            <OpenMessage
+              sender={getSender(item.senderId)}
+              last={i === arr.length - 1 ? true : false}
+              key={item.id}
+              message={item}
+            />
+          );
+        })}
     </div>
   );
 };

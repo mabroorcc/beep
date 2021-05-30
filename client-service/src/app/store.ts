@@ -5,6 +5,7 @@ import uploadReducer from "../features/FileUpload/uploadSlice";
 import paneReducer from "../features/RightHomeSidePanes/paneSlice";
 import chatsReducer from "../features/Chats/chatsSlice";
 import openChatReducer from "../features/OpenedChatPane/openChatSlice";
+import messageNotificationReducer from "../features/MessageNotifications/messageNotificationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     pane: paneReducer,
     chats: chatsReducer,
     openChat: openChatReducer,
+    messageNotification: messageNotificationReducer,
   },
 });
 

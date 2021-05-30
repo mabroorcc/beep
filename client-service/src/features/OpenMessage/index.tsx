@@ -1,14 +1,16 @@
-import { makeStyles } from "@material-ui/core";
+import { Avatar, makeStyles } from "@material-ui/core";
 import { useEffect, useRef } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { Message } from "../OpenedChatPane/openChatSlice";
+import { TUser } from "../user/types";
 import { selectUser } from "../user/userSlice";
 
 export interface Props {
   message: Message;
+  sender: TUser | undefined;
   last?: boolean;
 }
-export const OpenMessage: React.FC<Props> = ({ message, last }) => {
+export const OpenMessage: React.FC<Props> = ({ message, last, sender }) => {
   const user = useAppSelector(selectUser);
   const msgRef = useRef<HTMLDivElement>(null);
   const classes = useStyles();
@@ -21,7 +23,7 @@ export const OpenMessage: React.FC<Props> = ({ message, last }) => {
     }
   }, [last]);
 
-  if (!user) return <></>;
+  if (!user || !sender) return <></>;
 
   const isSender = () => {
     if (message.senderId === user.id) {
@@ -38,10 +40,15 @@ export const OpenMessage: React.FC<Props> = ({ message, last }) => {
       className={classes.openmessage}
     >
       <div className={classes.body}>
-        <div>{message.message}</div>
-        {message.attType === "image" && (
-          <img className={classes.img} src={message.attachment} />
-        )}
+        <div>
+          <div>{message.message}</div>
+          {message.attType === "image" && (
+            <img className={classes.img} src={message.attachment} />
+          )}
+        </div>
+        <div className={classes.senderDetails}>
+          from "<span style={{ color: "#ccc" }}>{sender.userName}</span>"
+        </div>
       </div>
     </div>
   );
@@ -56,11 +63,15 @@ const useStyles = makeStyles((theme) => {
     },
     body: {
       backgroundColor: theme.palette.background.paper,
-      color: "#ccc",
-      padding: "1rem",
+      color: "#fff",
+      padding: "0.5rem 0.8rem",
       borderRadius: "1rem",
-      maxWidth: "20rem",
+      maxWidth: "30rem",
       overflowWrap: "break-word",
+    },
+    senderDetails: {
+      color: "gray",
+      fontSize: "0.7rem",
     },
     img: {
       marginTop: "0.5rem",
