@@ -64,6 +64,9 @@ export const uploadFileAction =
 
       // split the file and start sending the files on this channel
       let chunkSize = 100000;
+      fsSocket.on(chan, (progress: number) => {
+        dispatch(setProgress(progress));
+      });
       splitBlob(0, chunkSize, file, (part) => {
         fsSocket.emit(chan, part);
       });
@@ -109,7 +112,7 @@ const splitBlob = async (
     const blob = iBlob.slice(start, start + chunkSize);
     const buff = await blob.arrayBuffer();
     callback({ partNo: start / chunkSize, buff });
-    splitBlob(start + chunkSize, chunkSize, blob, callback);
+    splitBlob(start + chunkSize, chunkSize, iBlob, callback);
   }
 };
 

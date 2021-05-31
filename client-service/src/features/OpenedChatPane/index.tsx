@@ -9,7 +9,7 @@ import { OpenedChatHeader } from "../OpenedChatHeader";
 import { OpenedChatMessages } from "../OpenedChatMessages";
 import { OpenedChatTextBox } from "../OpenedChatTextBox";
 import { selectOpenChat } from "./openChatSlice";
-import { getMembersOfTheChat, getMessagesOfChat } from "../api";
+import { getMembersOfTheChat } from "../api";
 import { TUser } from "../user/types";
 
 export interface Props {}

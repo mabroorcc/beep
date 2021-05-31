@@ -1,4 +1,4 @@
-import { Avatar, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { chat } from "../Chats/chatsSlice";
@@ -35,7 +35,7 @@ export const ChatListItem: React.FC<Props> = ({ chat, onClick }) => {
         setOwner(result.payload.user);
       })
       .catch(() => console.log("failed to get the owner data /ChatListItem"));
-  }, []);
+  }, [chat]);
 
   const getLimitedString = (str: string, len: number) => {
     if (str.length > len) {
@@ -59,7 +59,9 @@ export const ChatListItem: React.FC<Props> = ({ chat, onClick }) => {
     >
       <img className={classes.avatar} src={chat.picture} alt="chat picture" />
       <div className={classes.chatdetails}>
-        <div className={classes.chatname}>{chat.name}</div>
+        <div className={classes.chatname}>
+          {getLimitedString(chat.name, 14)}
+        </div>
         {owner && owner.userName && (
           <div className={classes.owner}>
             &#128081; @{getLimitedString(owner.userName, 10)}
@@ -88,7 +90,7 @@ const useStyles = makeStyles({
     alignItems: "center",
     cursor: "pointer",
     padding: "0.7rem",
-    borderRadius: "0.8rem",
+    borderRadius: "1.1rem",
     transition: "all 0.2s linear",
   },
   avatar: {

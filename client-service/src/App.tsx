@@ -1,7 +1,7 @@
 import { AnimatePresence } from "framer-motion";
 import { Switch, Route, useLocation } from "react-router-dom";
 import { HomePage, HOME_PAGE_PATH } from "./pages/home";
-import { LoginPage } from "./pages/login";
+import { LoginPage, LOGIN_PAGE_PATH } from "./pages/login";
 import theme from "./features/Theme";
 import { MuiThemeProvider } from "@material-ui/core";
 import { CssBaseline } from "@material-ui/core";
@@ -41,7 +41,7 @@ function App() {
       <CssBaseline />
       <AnimatePresence exitBeforeEnter>
         <Switch location={location} key={location.pathname}>
-          {user && (
+          {user ? (
             <>
               <BeepSocket.Provider value={beepSocket}>
                 <Route exact path={HOME_PAGE_PATH} component={HomePage} />
@@ -56,19 +56,18 @@ function App() {
                 path={CHANGE_PROFILE_PAGE_PATH}
                 component={ChangeProfile}
               />
-              <Route
-                path="*"
-                render={() => (
-                  <PageComponenet duration={0.3} enter="middle" leave="left">
-                    <ExpandedComponenet center>
-                      404 not found
-                    </ExpandedComponenet>
-                  </PageComponenet>
-                )}
-              />
             </>
+          ) : (
+            <LoginPage />
           )}
-          {!user && <LoginPage />}
+          <Route
+            path="*"
+            render={() => (
+              <PageComponenet duration={0.3} enter="middle" leave="left">
+                <ExpandedComponenet center>404 not found</ExpandedComponenet>
+              </PageComponenet>
+            )}
+          />
         </Switch>
       </AnimatePresence>
     </MuiThemeProvider>

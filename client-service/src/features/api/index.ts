@@ -39,6 +39,12 @@ export const getUsersWithUserName = async (userName: string) => {
   }
 };
 
+export const logout = async () => {
+  const response = await jsonReq("http://localhost:4000/auth/a/signout");
+  if (response.ok) return true;
+  return false;
+};
+
 export const getOneUserWithId = async (id: string) => {
   const response = await jsonReq(
     "http://localhost:4000/auth/users/find/user/" + id,

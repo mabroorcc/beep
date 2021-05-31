@@ -8,6 +8,7 @@ import { uploadFileAction } from "../FileUpload/uploadSlice";
 export const useOpenedChatTextBox = (chat: chat) => {
   const [file, setFile] = useState<{ file: File; type: string } | undefined>();
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
 
   const onMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,16 +25,19 @@ export const useOpenedChatTextBox = (chat: chat) => {
   };
 
   const sendMessage = () => {
+    setLoading(true);
     if (file) {
       dispatch(
         uploadFileAction(file.file.name, file.file.slice(), (url) => {
-          sendMessageRequest(url, file.type).catch((e) =>
-            console.log("/TextBox/" + e.message)
-          );
+          sendMessageRequest(url, file.type)
+            .then(() => setLoading(false))
+            .catch((e) => console.log("/TextBox/" + e.message));
         })
       );
     } else {
-      sendMessageRequest().catch((e) => console.log("/TextBox/" + e.message));
+      sendMessageRequest()
+        .then(() => setLoading(false))
+        .catch((e) => console.log("/TextBox/" + e.message));
     }
   };
 
@@ -61,17 +65,17 @@ export const useOpenedChatTextBox = (chat: chat) => {
       if (!e.target.files) return setFile(undefined);
       const file = e.target.files[0];
       if (!file) return setFile(undefined);
-      let type: string = "";
+      let fileType: string = "";
       if ((file as File).type.includes("image")) {
-        type = "image";
+        fileType = "image";
       } else if ((file as File).type.includes("video")) {
-        type = "video";
+        fileType = "video";
       } else {
-        type = "file";
+        fileType = "file";
       }
       setFile({
         file: file,
-        type,
+        type: fileType,
       });
     });
     input.click();
@@ -90,6 +94,7 @@ export const useOpenedChatTextBox = (chat: chat) => {
     getInputFile,
     handleAttachmentClick,
     message,
+    loading,
     onMessageChange,
     onMessageKeyPress,
     sendMessageBtnHandler,

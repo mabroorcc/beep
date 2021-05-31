@@ -3,7 +3,10 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ChatListItem } from "../ChatListItem";
 import { chat, selectChats } from "../Chats/chatsSlice";
 import { selectMessageNotifications } from "../MessageNotifications/messageNotificationSlice";
-import { selectOpenChat } from "../OpenedChatPane/openChatSlice";
+import {
+  dumpOpenMessages,
+  selectOpenChat,
+} from "../OpenedChatPane/openChatSlice";
 import { goToOpenedChatPane } from "../RightHomeSidePanes/paneSlice";
 
 export interface Props {}
@@ -13,9 +16,9 @@ export const ChatsList: React.FC<Props> = () => {
   const chats = useAppSelector(selectChats);
   const dispatch = useAppDispatch();
   const messageNotifications = useAppSelector(selectMessageNotifications);
-  const openChat = useAppSelector(selectOpenChat);
 
   const handleChatClick = (chat: chat) => {
+    dispatch(dumpOpenMessages());
     dispatch(goToOpenedChatPane(chat));
   };
 
@@ -31,10 +34,6 @@ export const ChatsList: React.FC<Props> = () => {
 
   const getSortedChatsByNotif = (chats: chat[]) => {
     return chats.slice().sort((a, b) => {
-      // uncomment if you want to show openChat on top
-      //if (openChat) {
-      //if (openChat.id === a.id) return -1;
-      //}
       return getChatNotificationCount(b.id) - getChatNotificationCount(a.id);
     });
   };

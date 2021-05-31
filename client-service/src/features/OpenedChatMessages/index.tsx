@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getMessagesOfChat } from "../api";
 import { chat } from "../Chats/chatsSlice";

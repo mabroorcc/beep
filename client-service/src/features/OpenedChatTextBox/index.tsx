@@ -4,6 +4,9 @@ import ToggleButton from "@material-ui/lab/ToggleButton";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
 import { useOpenedChatTextBox } from "./useOpenedChatTextBox";
 import SendIcon from "@material-ui/icons/Send";
+import { Progress } from "../Progress";
+import { selectUpload } from "../FileUpload/uploadSlice";
+import { useAppSelector } from "../../app/hooks";
 
 export interface Props {
   chat: chat;
@@ -11,8 +14,10 @@ export interface Props {
 
 export const OpenedChatTextBox: React.FC<Props> = ({ chat }) => {
   const classes = useStyles();
+  const uploadData = useAppSelector(selectUpload);
   const {
     file,
+    loading,
     handleAttachmentClick,
     message,
     onMessageChange,
@@ -31,6 +36,7 @@ export const OpenedChatTextBox: React.FC<Props> = ({ chat }) => {
         <AttachFileIcon />
       </ToggleButton>
       <input
+        disabled={uploadData.progress > 1}
         value={message}
         onKeyPress={onMessageKeyPress}
         onChange={onMessageChange}
@@ -38,12 +44,16 @@ export const OpenedChatTextBox: React.FC<Props> = ({ chat }) => {
         className={classes.textinput}
         type="text"
       />
-      <IconButton
-        onClick={sendMessageBtnHandler}
-        className={classes.sendtextbtn}
-      >
-        <SendIcon />
-      </IconButton>
+      {loading ? (
+        <Progress val={uploadData.progress} />
+      ) : (
+        <IconButton
+          onClick={sendMessageBtnHandler}
+          className={classes.sendtextbtn}
+        >
+          <SendIcon />
+        </IconButton>
+      )}
     </div>
   );
 };
@@ -57,6 +67,7 @@ const useStyles = makeStyles((theme) => {
       backgroundColor: theme.palette.background.paper,
       padding: "1rem",
       display: "flex",
+      position: "relative",
     },
     attachmentbtn: {
       borderRadius: "50%",
@@ -72,6 +83,10 @@ const useStyles = makeStyles((theme) => {
     },
     sendtextbtn: {
       marginLeft: "1rem",
+    },
+    loading: {
+      position: "absolute",
+      bottom: "110%",
     },
   };
 });

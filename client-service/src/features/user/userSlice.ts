@@ -45,7 +45,7 @@ export const UserSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    logout: (state) => {
+    logoutUser: (state) => {
       state.user = undefined;
     },
     setProfileAct: (state, action: PayloadAction<string>) => {
@@ -68,11 +68,7 @@ export const UserSlice = createSlice({
   },
 });
 
-export const {
-  logout,
-  setUserNameAct,
-  setProfileAct,
-  setFullNameAct,
-} = UserSlice.actions;
+export const { logoutUser, setUserNameAct, setProfileAct, setFullNameAct } =
+  UserSlice.actions;
 export const selectUser = (state: RootState) => state.user.user;
 export default UserSlice.reducer;
