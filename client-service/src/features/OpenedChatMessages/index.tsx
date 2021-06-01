@@ -46,6 +46,7 @@ export const OpenedChatMessages: React.FC<Props> = ({ chat, members }) => {
     getMessagesOfChat(chat.id, messages.length)
       .then((res) => {
         if (res.length < 15) {
+          dispatch(addOpenMessages(res));
           setMoreBtn(false);
           return;
         }

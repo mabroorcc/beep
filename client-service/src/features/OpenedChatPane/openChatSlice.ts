@@ -31,7 +31,6 @@ const openChatSlice = createSlice({
       state.chat = action.payload;
     },
     addOpenMessages: (state, action: PayloadAction<Message[]>) => {
-      console.log(action.payload);
       state.messages = sortById([...action.payload, ...state.messages]);
     },
     dumpOpenMessages: (state) => {
