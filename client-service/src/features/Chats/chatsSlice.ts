@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { act } from "@testing-library/react";
 import { RootState } from "../../app/store";
 
 export interface chat {
@@ -30,6 +31,9 @@ const chatSlice = createSlice({
       state.chats = action.payload;
     },
     addChat: (state, action: PayloadAction<chat>) => {
+      for (let chat of state.chats) {
+        if (chat.id === action.payload.id) return state;
+      }
       state.chats.push(action.payload);
     },
   },

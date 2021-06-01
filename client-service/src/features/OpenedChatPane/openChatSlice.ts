@@ -31,18 +31,25 @@ const openChatSlice = createSlice({
       state.chat = action.payload;
     },
     addOpenMessages: (state, action: PayloadAction<Message[]>) => {
-      state.messages = sortByTime([...action.payload, ...state.messages]);
+      console.log(action.payload);
+      state.messages = sortById([...action.payload, ...state.messages]);
     },
     dumpOpenMessages: (state) => {
       state.messages = [];
     },
     deleteMessage: (state, action: PayloadAction<number>) => {
-      state.messages = sortByTime(
-        state.messages.slice().filter((msg) => msg.id !== action.payload)
+      state.messages = sortById(
+        state.messages.filter((msg) => msg.id !== action.payload)
       );
     },
   },
 });
+
+const sortById = (messages: Message[]) => {
+  return messages.slice().sort((a, b) => {
+    return a.id - b.id;
+  });
+};
 
 const sortByTime = (messages: Message[]) => {
   return messages.slice().sort((a, b) => {

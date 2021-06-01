@@ -1,4 +1,4 @@
-import { getManager } from "typeorm";
+import { getManager, getRepository } from "typeorm";
 import { Messages } from "./messages.entity";
 
 export const MessageService = {
@@ -18,14 +18,14 @@ export const MessageService = {
     message.attType = attType ? attType : "none";
     return message.save();
   },
-  getMessagesOfChat: (chatId: string, offset: number) => {
-    return getManager()
-      .createQueryBuilder(Messages, "messages")
-      .where("messages.chatId = :chatId", { chatId })
-      .orderBy("messages.id", "DESC")
-      .offset(offset)
-      .limit(100)
-      .getMany();
+  getMessagesOfChat: async (chatId: string, offset: number) => {
+    const [result] = await getRepository(Messages).findAndCount({
+      where: { chatId: chatId },
+      order: { id: "DESC" },
+      take: 15,
+      skip: offset,
+    });
+    return result;
   },
   seenMessage: async (whoId: string, id: number) => {
     const message = await Messages.findOne({ id });

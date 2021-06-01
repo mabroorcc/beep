@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/core";
-import { useEffect, useRef } from "react";
+import { IconButton, makeStyles } from "@material-ui/core";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getMessagesOfChat } from "../api";
 import { chat } from "../Chats/chatsSlice";
@@ -10,6 +10,7 @@ import {
 } from "../OpenedChatPane/openChatSlice";
 import { OpenMessage } from "../OpenMessage";
 import { TUser } from "../user/types";
+import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 
 export interface Props {
   chat: chat;
@@ -19,12 +20,18 @@ export interface Props {
 export const OpenedChatMessages: React.FC<Props> = ({ chat, members }) => {
   const classes = useStyles();
   const messages = useAppSelector(selectOpenMessages);
+  const [showMoreBtn, setMoreBtn] = useState(false);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(dumpOpenMessages());
     (async () => {
       const result = await getMessagesOfChat(chat.id);
+      if (result.length >= 15) {
+        setMoreBtn(true);
+      } else {
+        setMoreBtn(false);
+      }
       dispatch(addOpenMessages(result));
     })();
   }, [chat, dispatch]);
@@ -35,8 +42,27 @@ export const OpenedChatMessages: React.FC<Props> = ({ chat, members }) => {
     }
   };
 
+  const handleLoadMore = () => {
+    getMessagesOfChat(chat.id, messages.length)
+      .then((res) => {
+        if (res.length < 15) {
+          setMoreBtn(false);
+          return;
+        }
+        dispatch(addOpenMessages(res));
+      })
+      .catch((e) => console.log("/OpenedChatMessages loadmore", e.message));
+  };
+
   return (
     <div className={classes.openchatmessages}>
+      {showMoreBtn && (
+        <div style={{ textAlign: "center", margin: "1rem 0" }}>
+          <IconButton onClick={handleLoadMore}>
+            <ArrowDropUpIcon />
+          </IconButton>
+        </div>
+      )}
       {messages &&
         messages.map((item, i, arr) => {
           return (
