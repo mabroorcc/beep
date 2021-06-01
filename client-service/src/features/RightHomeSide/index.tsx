@@ -24,7 +24,7 @@ export const RightHomeSide: React.FC<Props> = () => {
 const useStyles = makeStyles({
   main: {
     width: "75%",
-    height: "100%",
+    height: "calc(5rem + 1rem + 5rem + 1rem + 65vh)",
     marginLeft: "1rem",
     marginRight: "1rem",
     marginTop: "2rem",

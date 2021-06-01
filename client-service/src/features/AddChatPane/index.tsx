@@ -27,7 +27,7 @@ export const AddChatPane: React.FC<Props> = () => {
   } = useAddChatPane();
 
   return (
-    <ExpandedComponenet center>
+    <div className={classes.addchatwrapper}>
       <div className={classes.main}>
         <ImageSect image={image} setBlob={setBlobImage} setImage={setImage} />
         <TextField
@@ -69,7 +69,7 @@ export const AddChatPane: React.FC<Props> = () => {
           )}
         </div>
       </div>
-    </ExpandedComponenet>
+    </div>
   );
 };
 
@@ -94,5 +94,12 @@ const useStyles = makeStyles({
   },
   btn: {
     margin: "1rem 0",
+  },
+  addchatwrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "calc(5rem + 1rem + 5rem + 1rem + 65vh)",
   },
 });
