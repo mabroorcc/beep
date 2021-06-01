@@ -42,6 +42,32 @@ export const InjectApiTo = (socket: Socket) => {
     }
   });
 
+  socket.on(O.REMOVE_MEMBER_FROM_CHAT, async ({ memberId, chatId }) => {
+    try {
+      if (!memberId || !chatId) throw new Error("Invalid Params!");
+      await MemberService.removeMemberFromChat(memberId, chatId);
+      return socket.emit(O.REMOVE_MEMBER_FROM_CHAT + "RES", true);
+    } catch (e) {
+      return socket.emit(O.REMOVE_MEMBER_FROM_CHAT + "ERR", e.message);
+    }
+  });
+
+  socket.on(O.DELETE_MESSAGE, async ({ messageId }) => {
+    try {
+      if (!messageId) throw new Error("Invalid Params");
+      const result = await MessageService.deleteMessage(messageId, thisUserId);
+      if (result.message) {
+        NotificationService.notifyDeletedMessage(
+          messageId,
+          result.message.chatId
+        );
+      }
+      return socket.emit(O.DELETE_MESSAGE + "RES", result.res);
+    } catch (e) {
+      return socket.emit(O.DELETE_MESSAGE + "ERR", e.message);
+    }
+  });
+
   socket.on(O.CHECK_IF_MEMBER_ONLINE, ({ memberId }, fn) => {
     if (!memberId) return fn("no member id found");
     const mem = connections.get(memberId);

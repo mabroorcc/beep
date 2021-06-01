@@ -5,13 +5,15 @@ import { IconButton, makeStyles } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import {
   addOpenMessages,
+  deleteMessage,
   Message,
   selectOpenChat,
 } from "../OpenedChatPane/openChatSlice";
 import { chat } from "../Chats/chatsSlice";
 import { MessageForwardDialog } from "../ForwardMessagePopup";
-import { sendMessageInChat } from "../api";
+import { deleteMessageFromChat, sendMessageInChat } from "../api";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectUser } from "../user/userSlice";
 
 interface Props {
   dir: "left" | "right";
@@ -22,6 +24,7 @@ export const MessageMenu: React.FC<Props> = ({ dir, message }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [openForwardDialog, setForwardDialog] = useState(false);
   const openChat = useAppSelector(selectOpenChat);
+  const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -69,6 +72,17 @@ export const MessageMenu: React.FC<Props> = ({ dir, message }) => {
     }
   };
 
+  const handleDeleteMessage = () => {
+    deleteMessageFromChat(message.id).then((res) => {
+      if (res === "deleted") {
+        // update state
+        dispatch(deleteMessage(message.id));
+      } else {
+        console.log(res);
+      }
+    });
+  };
+
   return (
     <div
       style={{
@@ -94,6 +108,9 @@ export const MessageMenu: React.FC<Props> = ({ dir, message }) => {
         onClose={handleClose}
       >
         <MenuItem onClick={handleForward}>Forward</MenuItem>
+        {user && user.id === message.senderId && (
+          <MenuItem onClick={handleDeleteMessage}>Delete</MenuItem>
+        )}
       </Menu>
       <MessageForwardDialog
         open={openForwardDialog}

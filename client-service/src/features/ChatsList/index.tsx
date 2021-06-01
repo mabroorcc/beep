@@ -3,10 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ChatListItem } from "../ChatListItem";
 import { chat, selectChats } from "../Chats/chatsSlice";
 import { selectMessageNotifications } from "../MessageNotifications/messageNotificationSlice";
-import {
-  dumpOpenMessages,
-  selectOpenChat,
-} from "../OpenedChatPane/openChatSlice";
+import { dumpOpenMessages } from "../OpenedChatPane/openChatSlice";
 import { goToOpenedChatPane } from "../RightHomeSidePanes/paneSlice";
 
 export interface Props {}

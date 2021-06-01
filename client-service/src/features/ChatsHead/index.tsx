@@ -1,5 +1,4 @@
 import { IconButton, makeStyles } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import { useAppDispatch } from "../../app/hooks";
 import { goToAddChatPane } from "../RightHomeSidePanes/paneSlice";
@@ -14,9 +13,6 @@ export const ChatsHead: React.FC<Props> = () => {
     <div className={classes.main}>
       <h4 className={classes.title}>Chats</h4>
       <div>
-        <IconButton style={{ marginRight: "1rem" }} size="small">
-          <SearchIcon />
-        </IconButton>
         <IconButton onClick={() => dispatch(goToAddChatPane())} size="small">
           <AddBoxIcon />
         </IconButton>

@@ -36,6 +36,11 @@ const openChatSlice = createSlice({
     dumpOpenMessages: (state) => {
       state.messages = [];
     },
+    deleteMessage: (state, action: PayloadAction<number>) => {
+      state.messages = sortByTime(
+        state.messages.slice().filter((msg) => msg.id !== action.payload)
+      );
+    },
   },
 });
 
@@ -49,6 +54,6 @@ const sortByTime = (messages: Message[]) => {
 
 export const selectOpenChat = (state: RootState) => state.openChat.chat;
 export const selectOpenMessages = (state: RootState) => state.openChat.messages;
-export const { setOpenChat, addOpenMessages, dumpOpenMessages } =
+export const { setOpenChat, deleteMessage, addOpenMessages, dumpOpenMessages } =
   openChatSlice.actions;
 export default openChatSlice.reducer;

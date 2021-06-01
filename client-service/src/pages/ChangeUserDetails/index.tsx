@@ -107,6 +107,9 @@ export const ChangeUserDetails: React.FC<Props> = () => {
           <Typography className={classes.typo} variant="h6">
             User Details
           </Typography>
+          <Typography style={{ marginBottom: "0.5rem" }}>
+            * This name will uniquely identify you
+          </Typography>
           <TextField
             error={userError}
             className={classes.textField}

@@ -76,3 +76,7 @@ export const sendMessageInChat = async (params: SendMessageParams) => {
   const msg = await PromisedSocketCall(O.SEND_MESSAGE, params);
   return msg as Message;
 };
+
+export const deleteMessageFromChat = async (messageId: number) => {
+  return PromisedSocketCall(O.DELETE_MESSAGE, { messageId });
+};

@@ -43,6 +43,15 @@ export const NotificationService = {
       }
     });
   },
+  notifyDeletedMessage: async (messageId: number, chatId: string) => {
+    const members = await MemberService.getAllTheMembersOfTheChat(chatId);
+    members.forEach((member) => {
+      const memSocket = connections.get(member.memberId);
+      if (memSocket) {
+        memSocket.emit(O.DELETE_MESSAGE_NOTIFICATION, messageId);
+      }
+    });
+  },
   notifyTypingMessageToChat: async (chatId: string, typerId: string) => {
     const memebers = await MemberService.getAllTheMembersOfTheChat(chatId);
     memebers.forEach((member) => {

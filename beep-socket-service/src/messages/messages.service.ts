@@ -38,12 +38,13 @@ export const MessageService = {
   deleteMessage: async (messageId: number, senderId: string) => {
     const message = await Messages.findOne({ id: messageId });
 
-    if (!message) return "message not found";
+    if (!message) return { res: "message not found", message: null };
 
     if (message.senderId === senderId) {
-      return Messages.delete({ id: messageId });
+      await Messages.delete({ id: messageId });
+      return { res: "deleted", message };
     } else {
-      return "sender mismatch";
+      return { res: "sender mismatch", message: null };
     }
   },
 };

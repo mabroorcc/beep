@@ -7,6 +7,9 @@ export const MemberService = {
     member.memberId = memberId;
     return member.save();
   },
+  removeMemberFromChat: (memberId: string, chatId: string) => {
+    return Members.delete({ memberId, chatId });
+  },
   getAllTheMemberShips: (memberId: string) => {
     return Members.find({ memberId: memberId });
   },

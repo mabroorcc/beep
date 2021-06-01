@@ -3,7 +3,10 @@ import { O } from "../O";
 import { store } from "../../app/store";
 import { addChat, setChats } from "../Chats/chatsSlice";
 import { addMessageNotifications } from "../MessageNotifications/messageNotificationSlice";
-import { addOpenMessages } from "../OpenedChatPane/openChatSlice";
+import {
+  addOpenMessages,
+  deleteMessage,
+} from "../OpenedChatPane/openChatSlice";
 
 let beepSocket: Socket;
 
@@ -30,6 +33,9 @@ const addHandlersTo = (socket: Socket) => {
     } else {
       store.dispatch(addMessageNotifications([notification]));
     }
+  });
+  socket.on(O.DELETE_MESSAGE_NOTIFICATION, (messageId: number) => {
+    store.dispatch(deleteMessage(messageId));
   });
 };
 
