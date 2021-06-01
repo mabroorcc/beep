@@ -1,7 +1,7 @@
 import React from "react";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { IconButton, makeStyles } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import SettingsIcon from "@material-ui/icons/Settings";
 import { logout } from "../api";
 import { useHistory } from "react-router-dom";

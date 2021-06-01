@@ -5,6 +5,7 @@ import { Message } from "../OpenedChatPane/openChatSlice";
 import { TUser } from "../user/types";
 import { selectUser } from "../user/userSlice";
 import DescriptionIcon from "@material-ui/icons/Description";
+import { MessageMenu } from "../MessageMenu";
 
 export interface Props {
   message: Message;
@@ -34,7 +35,7 @@ export const OpenMessage: React.FC<Props> = ({ message, last, sender }) => {
         msgRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
       }
     }
-  }, [msgRef]);
+  }, [msgRef, last]);
 
   if (!user || !sender) return <></>;
 
@@ -53,6 +54,7 @@ export const OpenMessage: React.FC<Props> = ({ message, last, sender }) => {
       className={classes.openmessage}
     >
       <div className={classes.body}>
+        <MessageMenu message={message} dir={isSender() ? "left" : "right"} />
         <div>
           <div>{message.message}</div>
           {message.attType === "image" && (
@@ -97,6 +99,7 @@ const useStyles = makeStyles((theme) => {
       borderRadius: "1rem",
       maxWidth: "25rem",
       overflowWrap: "break-word",
+      position: "relative",
     },
     senderDetails: {
       color: "gray",
