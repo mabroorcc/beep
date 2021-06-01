@@ -64,7 +64,7 @@ io.on("connection", (socket: Socket) => {
 
     // creating a stream
     const stream = fs.createWriteStream(
-      path.resolve(__dirname + "/../files/" + fileId)
+      path.resolve(__dirname + "/../files/" + fileId + fileMetadata.fileName)
     );
 
     // Tracking the upload for saftey
@@ -97,7 +97,7 @@ io.on("connection", (socket: Socket) => {
         // emit the finish event and send the url
         socket.emit(
           "file-upload-finish",
-          `http://localhost:4000/files/${fileId}`
+          `http://localhost:4000/files/${fileId}${fileMetadata.fileName}`
         );
 
         // remove the job because its finished

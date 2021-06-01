@@ -26,6 +26,7 @@ export const MessageMenu: React.FC<Props> = ({ dir, message }) => {
   const openChat = useAppSelector(selectOpenChat);
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
+  const classes = useStyles();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -84,14 +85,7 @@ export const MessageMenu: React.FC<Props> = ({ dir, message }) => {
   };
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: "0.2rem",
-        ...getSide(),
-        opacity: "0.1",
-      }}
-    >
+    <div className={classes.messageMenu} style={getSide()}>
       <IconButton
         aria-controls="simple-menu"
         aria-haspopup="true"
@@ -124,7 +118,10 @@ export const MessageMenu: React.FC<Props> = ({ dir, message }) => {
 const useStyles = makeStyles({
   messageMenu: {
     position: "absolute",
-    right: "-20%",
-    top: "0",
+    top: "0.2rem",
+    opacity: "0.1",
+    "&:hover": {
+      opacity: "1",
+    },
   },
 });
