@@ -19,6 +19,14 @@ export const InjectApiTo = (socket: Socket) => {
     connections.delete(thisUserId);
   });
 
+  socket.on(O.CONNECT, () => {
+    connections.set(thisUserId, socket);
+  });
+
+  socket.on(O.DISCONNECT, () => {
+    connections.delete(thisUserId);
+  });
+
   // sending all the notifications for that user as he gets online
   const notifs = notifications.get(thisUserId);
   if (notifs) {

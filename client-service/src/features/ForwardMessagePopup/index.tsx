@@ -42,7 +42,7 @@ export function MessageForwardDialog(props: SimpleDialogProps) {
       aria-labelledby="simple-dialog-title"
       open={open}
     >
-      <DialogTitle id="simple-dialog-title">To</DialogTitle>
+      <DialogTitle id="simple-dialog-title">Send To</DialogTitle>
       <List>
         {chats.map((chat) => {
           return (

@@ -6,11 +6,12 @@ import ToggleButton from "@material-ui/lab/ToggleButton";
 import { makeStyles } from "@material-ui/core";
 import WifiIcon from "@material-ui/icons/Wifi";
 import WifiOffIcon from "@material-ui/icons/WifiOff";
+import { connectToServer, disconnectServer } from "../api";
 
 export interface Props {}
 
 export const UserAvatarGroup: React.FC<Props> = () => {
-  const [selected, setSelected] = useState(false);
+  const [selected, setSelected] = useState(true);
   const user = useAppSelector(selectUser);
   const classes = useStyles();
 
@@ -30,6 +31,19 @@ export const UserAvatarGroup: React.FC<Props> = () => {
 
   const getName = () => {
     return getFirstNChars(user.name, 15);
+  };
+
+  const handleConnectionToggleChange = () => {
+    if (selected) {
+      disconnectServer().catch((e) =>
+        console.log("/UserAvatarGroup failed to disconnect", e.message)
+      );
+    } else {
+      connectToServer().catch((e) =>
+        console.log("/UserAvatarGroup failed to connect", e.message)
+      );
+    }
+    setSelected(!selected);
   };
 
   return (
@@ -65,9 +79,7 @@ export const UserAvatarGroup: React.FC<Props> = () => {
         className={classes.onlineBtn}
         value="check"
         selected={selected}
-        onChange={() => {
-          setSelected(!selected);
-        }}
+        onChange={handleConnectionToggleChange}
       >
         {selected ? <WifiIcon /> : <WifiOffIcon />}
       </ToggleButton>

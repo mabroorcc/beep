@@ -80,3 +80,11 @@ export const sendMessageInChat = async (params: SendMessageParams) => {
 export const deleteMessageFromChat = async (messageId: number) => {
   return PromisedSocketCall(O.DELETE_MESSAGE, { messageId });
 };
+
+export const connectToServer = () => {
+  return PromisedSocketCall(O.CONNECT, null);
+};
+
+export const disconnectServer = () => {
+  return PromisedSocketCall(O.DISCONNECT, null);
+};
