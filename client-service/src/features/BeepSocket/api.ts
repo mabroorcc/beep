@@ -1,12 +1,22 @@
 import { Socket } from "socket.io-client";
 import { O } from "../O";
 import { store } from "../../app/store";
-import { addChat, setChats } from "../Chats/chatsSlice";
+import {
+  addChat,
+  removeChat,
+  setChats,
+  updateChangedChatName,
+} from "../Chats/chatsSlice";
 import { addMessageNotifications } from "../MessageNotifications/messageNotificationSlice";
 import {
   addOpenMessages,
   deleteMessage,
+  changeOpenChatName,
 } from "../OpenedChatPane/openChatSlice";
+import {
+  goToNewChatPane,
+  goToOpenedChatPane,
+} from "../RightHomeSidePanes/paneSlice";
 
 let beepSocket: Socket;
 
@@ -36,6 +46,20 @@ const addHandlersTo = (socket: Socket) => {
   });
   socket.on(O.DELETE_MESSAGE_NOTIFICATION, (messageId: number) => {
     store.dispatch(deleteMessage(messageId));
+  });
+  socket.on(O.CHAT_NAME_CHANGED, ({ chatId, name }) => {
+    const currentOpenChat = store.getState().openChat.chat;
+    if (currentOpenChat && currentOpenChat.id === chatId) {
+      store.dispatch(goToNewChatPane());
+    }
+    store.dispatch(updateChangedChatName({ chatId, name }));
+  });
+  socket.on(O.CHAT_DESTROYED, (chatId: string) => {
+    const currentOpenChat = store.getState().openChat.chat;
+    if (currentOpenChat && currentOpenChat.id === chatId) {
+      store.dispatch(goToNewChatPane());
+    }
+    store.dispatch(removeChat({ id: chatId }));
   });
 };
 

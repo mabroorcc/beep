@@ -45,6 +45,9 @@ const openChatSlice = createSlice({
       state.chat = undefined;
       state.messages = [];
     },
+    changeOpenChatName: (state, action: PayloadAction<string>) => {
+      if (state.chat) state.chat.name = action.payload;
+    },
   },
 });
 
@@ -54,13 +57,13 @@ const sortById = (messages: Message[]) => {
   });
 };
 
-const sortByTime = (messages: Message[]) => {
-  return messages.slice().sort((a, b) => {
-    const AD = new Date(a.date);
-    const BD = new Date(b.date);
-    return AD.getTime() - BD.getTime();
-  });
-};
+//const sortByTime = (messages: Message[]) => {
+//return messages.slice().sort((a, b) => {
+//const AD = new Date(a.date);
+//const BD = new Date(b.date);
+//return AD.getTime() - BD.getTime();
+//});
+//};
 
 export const selectOpenChat = (state: RootState) => state.openChat.chat;
 export const selectOpenMessages = (state: RootState) => state.openChat.messages;
@@ -70,5 +73,6 @@ export const {
   deleteMessage,
   addOpenMessages,
   dumpOpenMessages,
+  changeOpenChatName,
 } = openChatSlice.actions;
 export default openChatSlice.reducer;

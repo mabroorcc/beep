@@ -36,10 +36,28 @@ const chatSlice = createSlice({
       }
       state.chats.push(action.payload);
     },
+    updateChangedChatName: (
+      state,
+      action: PayloadAction<{ chatId: string; name: string }>
+    ) => {
+      state.chats = state.chats.map((chat) => {
+        if (chat.id === action.payload.chatId) {
+          chat.name = action.payload.name;
+          return chat;
+        } else {
+          return chat;
+        }
+      });
+    },
   },
 });
 
 export const selectChats = (state: RootState) => state.chats.chats;
-export const { addBunchOfChats, removeChat, setChats, addChat } =
-  chatSlice.actions;
+export const {
+  addBunchOfChats,
+  removeChat,
+  setChats,
+  addChat,
+  updateChangedChatName,
+} = chatSlice.actions;
 export default chatSlice.reducer;

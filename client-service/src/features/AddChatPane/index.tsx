@@ -1,7 +1,6 @@
 import { IconButton, makeStyles, TextField } from "@material-ui/core";
 import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 import CloseIcon from "@material-ui/icons/Close";
-import { ExpandedComponenet } from "../ExpandedComponenet";
 import { ImageSect } from "./ImgSect";
 import { UserListing } from "../UserListing";
 import { SelectedListing } from "../SelectedListing";

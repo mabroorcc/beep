@@ -88,3 +88,11 @@ export const connectToServer = () => {
 export const disconnectServer = () => {
   return PromisedSocketCall(O.DISCONNECT, null);
 };
+
+export const changeChatName = (chatId: string, name: string) => {
+  return PromisedSocketCall(O.CHANGE_CHAT_NAME, { chatId, name });
+};
+
+export const destroyChat = (chatId: string) => {
+  return PromisedSocketCall(O.DESTROY_CHAT, { chatId });
+};

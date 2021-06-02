@@ -62,6 +62,15 @@ export const NotificationService = {
       }
     });
   },
+  notifyChatNameChanged: async (chatId: string, name: string) => {
+    const members = await MemberService.getAllTheMembersOfTheChat(chatId);
+    members.forEach((member) => {
+      const mem = connections.get(member.memberId);
+      if (mem) {
+        mem.emit(O.CHAT_NAME_CHANGED, { chatId, name });
+      }
+    });
+  },
   sendPendingNotifications: (userId: string) => {
     const user = connections.get(userId);
     if (user) {
@@ -72,5 +81,14 @@ export const NotificationService = {
         });
       }
     }
+  },
+  notifyChatDestroyed: async (chatId: string) => {
+    const members = await MemberService.getAllTheMembersOfTheChat(chatId);
+    members.forEach((member) => {
+      const mem = connections.get(member.memberId);
+      if (mem) {
+        mem.emit(O.CHAT_DESTROYED, chatId);
+      }
+    });
   },
 };

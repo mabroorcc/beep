@@ -14,4 +14,13 @@ export const ChatsService = {
   getAllChats: (ownerId: string) => {
     return Chats.find({ ownerId });
   },
+  changeChatName: async (chatId: string, name: string) => {
+    const chat = await Chats.findOne({ id: chatId });
+    if (!chat) return "no chat found with this id";
+    chat.name = name;
+    return chat.save();
+  },
+  destroyChat: (chatId: string) => {
+    return Chats.delete({ id: chatId });
+  },
 };

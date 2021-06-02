@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/core";
 import { AllChatMembersAvatarGroup } from "../AllChatMembersAvatarGroup";
 import { chat } from "../Chats/chatsSlice";
+import { OpenChatMenu } from "../OpenChatMenu";
 import { OpenedChatMembers } from "../OpenedChatMembers";
 import { TUser } from "../user/types";
 
@@ -23,6 +24,7 @@ export const OpenedChatHeader: React.FC<Props> = ({ chat, members }) => {
           <AllChatMembersAvatarGroup members={members} />
         </div>
       </div>
+      <OpenChatMenu chat={chat} members={members} />
     </div>
   );
 };

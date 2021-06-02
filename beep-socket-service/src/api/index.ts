@@ -170,4 +170,29 @@ export const InjectApiTo = (socket: Socket) => {
       }
     }
   );
+
+  socket.on(O.CHANGE_CHAT_NAME, async ({ chatId, name }) => {
+    try {
+      if (!chatId || !name) throw new Error("Invalid Params!");
+      const result = await ChatsService.changeChatName(chatId, name);
+
+      if (result === "no chat found with this id") {
+        throw new Error("no chat found with this id");
+      }
+      socket.emit(O.CHANGE_CHAT_NAME + "RES", result);
+      NotificationService.notifyChatNameChanged(chatId, result.name);
+    } catch (e) {
+      socket.emit(O.CHANGE_CHAT_NAME + "ERR", e.message);
+    }
+  });
+  socket.on(O.DESTROY_CHAT, async ({ chatId }) => {
+    try {
+      if (!chatId) throw new Error("Invalid Params!");
+      await ChatsService.destroyChat(chatId);
+      socket.emit(O.DESTROY_CHAT + "RES", "DONE");
+      NotificationService.notifyChatDestroyed(chatId);
+    } catch (e) {
+      socket.emit(O.DESTROY_CHAT + "ERR", e.message);
+    }
+  });
 };
