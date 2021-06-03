@@ -1,7 +1,7 @@
 import { AnimatePresence } from "framer-motion";
 import { Switch, Route, useLocation } from "react-router-dom";
 import { HomePage, HOME_PAGE_PATH } from "./pages/home";
-import { LoginPage, LOGIN_PAGE_PATH } from "./pages/login";
+import { LoginPage } from "./pages/login";
 import theme from "./features/Theme";
 import { MuiThemeProvider } from "@material-ui/core";
 import { CssBaseline } from "@material-ui/core";

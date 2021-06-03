@@ -36,6 +36,11 @@ const chatSlice = createSlice({
       }
       state.chats.push(action.payload);
     },
+    replaceChat: (state, action: PayloadAction<chat>) => {
+      const filtered = state.chats.filter((c) => c.id !== action.payload.id);
+      filtered.push(action.payload);
+      state.chats = filtered;
+    },
     updateChangedChatName: (
       state,
       action: PayloadAction<{ chatId: string; name: string }>
@@ -55,6 +60,7 @@ const chatSlice = createSlice({
 export const selectChats = (state: RootState) => state.chats.chats;
 export const {
   addBunchOfChats,
+  replaceChat,
   removeChat,
   setChats,
   addChat,

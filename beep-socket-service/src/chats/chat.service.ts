@@ -23,4 +23,10 @@ export const ChatsService = {
   destroyChat: (chatId: string) => {
     return Chats.delete({ id: chatId });
   },
+  changeChatPicture: async (chatId: string, picture: string) => {
+    const chat = await Chats.findOne({ id: chatId });
+    if (!chat) return;
+    chat.picture = picture;
+    return chat.save();
+  },
 };

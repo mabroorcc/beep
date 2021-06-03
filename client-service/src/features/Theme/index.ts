@@ -21,6 +21,11 @@ const theme = createMuiTheme({
         borderRadius: "10px",
       },
     },
+    MuiBackdrop: {
+      root: {
+        backgroundColor: "#191720cc",
+      },
+    },
   },
 });
 

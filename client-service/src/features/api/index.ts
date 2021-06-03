@@ -104,3 +104,6 @@ export const deleteMemberFromChat = (chatId: string, memberId: string) => {
 export const addThisMemberToChat = (chatId: string, memberId: string) => {
   return PromisedSocketCall(O.ADD_MEMBER_TO_CHAT, { chatId, memberId });
 };
+export const changeChatPicture = (chatId: string, picture: string) => {
+  return PromisedSocketCall(O.CHANGE_CHAT_PICTURE, { chatId, picture });
+};

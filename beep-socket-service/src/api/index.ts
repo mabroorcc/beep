@@ -186,6 +186,7 @@ export const InjectApiTo = (socket: Socket) => {
       socket.emit(O.CHANGE_CHAT_NAME + "ERR", e.message);
     }
   });
+
   socket.on(O.DESTROY_CHAT, async ({ chatId }) => {
     try {
       if (!chatId) throw new Error("Invalid Params!");
@@ -196,6 +197,7 @@ export const InjectApiTo = (socket: Socket) => {
       socket.emit(O.DESTROY_CHAT + "ERR", e.message);
     }
   });
+
   socket.on(O.DELETE_MEMBER_FROM_CHAT, async ({ chatId, memberId }) => {
     try {
       if (!chatId || !memberId) throw new Error("Invalid Params!");
@@ -204,6 +206,17 @@ export const InjectApiTo = (socket: Socket) => {
       socket.emit(O.DELETE_MEMBER_FROM_CHAT + "RES", result);
     } catch (e) {
       socket.emit(O.DELETE_MEMBER_FROM_CHAT + "ERR", e.message);
+    }
+  });
+
+  socket.on(O.CHANGE_CHAT_PICTURE, async ({ chatId, picture }) => {
+    try {
+      if (!chatId || !picture) throw new Error("Invalid Params!");
+      const chat = await ChatsService.changeChatPicture(chatId, picture);
+      socket.emit(O.CHANGE_CHAT_PICTURE + "RES", chat);
+      if (chat) NotificationService.notifyChatPictureChanged(chat);
+    } catch (e) {
+      socket.emit(O.CHANGE_CHAT_PICTURE + "ERR", e.message);
     }
   });
 };

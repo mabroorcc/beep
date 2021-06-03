@@ -8,8 +8,9 @@ import { TUser } from "../user/types";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../user/userSlice";
 import { ChangeChatNameDialog } from "../ChangeChatNameDialog";
-import { destroyChat } from "../api";
+import { deleteMemberFromChat, destroyChat } from "../api";
 import { EditMembersDialog } from "../EditMembersDialog";
+import { EditChatPictureDialog } from "../EditChatPictureDialog";
 
 interface Props {
   chat: chat;
@@ -20,6 +21,7 @@ export const OpenChatMenu: React.FC<Props> = ({ chat, members }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showChangeChatName, setShowChangeChatName] = useState(false);
   const [showEditMembers, setShowEditMember] = useState(false);
+  const [showEditPicutre, setShowEditPicture] = useState(false);
 
   const user = useAppSelector(selectUser);
 
@@ -38,18 +40,19 @@ export const OpenChatMenu: React.FC<Props> = ({ chat, members }) => {
     setAnchorEl(null);
   };
 
-  const handleEditChatClick = () => {
-    handleClose();
-  };
-
-  const handleChangeChatName = () => {
-    handleClose();
-    setShowChangeChatName(true);
-  };
-
   const handleDeleteChat = () => {
     const res = window.confirm("Are you sure?");
     if (res) destroyChat(chat.id);
+    handleClose();
+  };
+
+  const handleLeaveChat = () => {
+    const res = window.confirm("Are you sure?");
+    if (res && user) {
+      deleteMemberFromChat(chat.id, user.id).catch((e) =>
+        console.log("/OpenChatMenu ", e.message)
+      );
+    }
     handleClose();
   };
 
@@ -70,7 +73,14 @@ export const OpenChatMenu: React.FC<Props> = ({ chat, members }) => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleChangeChatName}>Edit Name</MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              setShowChangeChatName(true);
+            }}
+          >
+            Edit Name
+          </MenuItem>
           <MenuItem
             onClick={() => {
               setShowEditMember(true);
@@ -79,7 +89,14 @@ export const OpenChatMenu: React.FC<Props> = ({ chat, members }) => {
           >
             Edit Members
           </MenuItem>
-          <MenuItem onClick={handleEditChatClick}>Edit Picture</MenuItem>
+          <MenuItem
+            onClick={() => {
+              setShowEditPicture(true);
+              handleClose();
+            }}
+          >
+            Edit Picture
+          </MenuItem>
           <MenuItem onClick={handleDeleteChat}>Destroy Chat</MenuItem>
         </Menu>
       ) : (
@@ -90,7 +107,23 @@ export const OpenChatMenu: React.FC<Props> = ({ chat, members }) => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClose}>Leave Chat</MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              setShowChangeChatName(true);
+            }}
+          >
+            Edit Name
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setShowEditPicture(true);
+              handleClose();
+            }}
+          >
+            Edit Picture
+          </MenuItem>
+          <MenuItem onClick={handleLeaveChat}>Leave Chat</MenuItem>
         </Menu>
       )}
       <ChangeChatNameDialog
@@ -100,11 +133,14 @@ export const OpenChatMenu: React.FC<Props> = ({ chat, members }) => {
       />
       <EditMembersDialog
         open={showEditMembers}
-        handleClose={() => {
-          setShowEditMember(false);
-        }}
+        handleClose={() => setShowEditMember(false)}
         chat={chat}
         members={members}
+      />
+      <EditChatPictureDialog
+        open={showEditPicutre}
+        handleClose={() => setShowEditPicture(false)}
+        chat={chat}
       />
     </div>
   );

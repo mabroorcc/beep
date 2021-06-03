@@ -49,5 +49,5 @@ code {
 /* Hide scrollbar for IE, Edge and Firefox */
 * {
   scrollbar-color: #23212a #191720;
-  scrollbar-width: thin; /* Firefox */
+  scrollbar-width: none; /* Firefox */
 }

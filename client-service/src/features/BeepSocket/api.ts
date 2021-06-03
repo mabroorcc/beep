@@ -3,7 +3,9 @@ import { O } from "../O";
 import { store } from "../../app/store";
 import {
   addChat,
+  chat,
   removeChat,
+  replaceChat,
   setChats,
   updateChangedChatName,
 } from "../Chats/chatsSlice";
@@ -51,7 +53,9 @@ const addHandlersTo = (socket: Socket) => {
 
   socket.on(O.CHAT_NAME_CHANGED, ({ chatId, name }) => {
     const currentOpenChat = store.getState().openChat.chat;
-    if (currentOpenChat && currentOpenChat.id === chatId) refreshOpenedChat();
+    if (currentOpenChat && currentOpenChat.id === chatId) {
+      refreshOpenedChat({ ...currentOpenChat, name });
+    }
     store.dispatch(updateChangedChatName({ chatId, name }));
   });
 
@@ -88,12 +92,20 @@ const addHandlersTo = (socket: Socket) => {
 
     if (currentOpenChat.id === chatId) refreshOpenedChat();
   });
+
+  socket.on(O.CHAT_PICTURE_CHANGED, (chat: chat) => {
+    const currentOpenChat = store.getState().openChat.chat;
+    if (currentOpenChat && currentOpenChat.id === chat.id) {
+      refreshOpenedChat(chat);
+    }
+    store.dispatch(replaceChat(chat));
+  });
 };
 
-const refreshOpenedChat = () => {
+const refreshOpenedChat = (nchat?: chat) => {
   const currentOpenChat = store.getState().openChat.chat;
   if (!currentOpenChat) return;
-  const chat = { ...currentOpenChat };
+  const chat = nchat ? nchat : { ...currentOpenChat };
   store.dispatch(clearOpenChat());
   store.dispatch(goToOpenedChatPane(chat));
 };

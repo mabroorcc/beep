@@ -3,6 +3,8 @@ import { Messages } from "../messages/messages.entity";
 import { Socket } from "socket.io";
 import { O } from "../opcodes";
 import { ChatsService } from "../chats/chat.service";
+import { Members } from "../members/members.entity";
+import { Chats } from "../chats/chat.entity";
 
 interface Notification {
   title: string;
@@ -100,4 +102,22 @@ export const NotificationService = {
       }
     });
   },
+  notifyChatPictureChanged: async (chat: Chats) => {
+    BroadCast(chat.id, (socket) => {
+      socket.emit(O.CHAT_PICTURE_CHANGED, chat);
+    });
+  },
+};
+
+const BroadCast = async (
+  chatId: string,
+  callBack: (socket: Socket, member: Members) => void
+) => {
+  const members = await MemberService.getAllTheMembersOfTheChat(chatId);
+  members.forEach((mem) => {
+    const socket = connections.get(mem.memberId);
+    if (socket) {
+      callBack(socket, mem);
+    }
+  });
 };
