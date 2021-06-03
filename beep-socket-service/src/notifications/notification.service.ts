@@ -91,4 +91,13 @@ export const NotificationService = {
       }
     });
   },
+  notifyMemberDeleted: async (chatId: string, memberId: string) => {
+    const member = await MemberService.getAllTheMembersOfTheChat(chatId);
+    member.forEach((member) => {
+      const mem = connections.get(member.memberId);
+      if (mem) {
+        mem.emit(O.NOTIFY_MEMBER_REMOVED_FROM_CHAT, { chatId, memberId });
+      }
+    });
+  },
 };

@@ -21,10 +21,10 @@ const paneSlice = createSlice({
   name: "pane",
   initialState,
   reducers: {
-    goToAddChatPane: (state) => {
+    openAddChatPane: (state) => {
       state.CurrentPane = RightPanes.ADD_CHAT_PANE;
     },
-    goToNewChatPane: (state) => {
+    openNewChatPane: (state) => {
       state.CurrentPane = RightPanes.NEW_CHAT_PANE;
     },
     goToOpenedChatPane: (state) => {
@@ -40,6 +40,15 @@ export const goToOpenedChatPane =
     dispatch(paneSlice.actions.goToOpenedChatPane());
   };
 
+export const goToNewChatPane = (): AppThunk => (dispatch) => {
+  dispatch(setOpenChat(undefined));
+  dispatch(paneSlice.actions.openNewChatPane());
+};
+
+export const goToAddChatPane = (): AppThunk => (dispatch) => {
+  dispatch(setOpenChat(undefined));
+  dispatch(paneSlice.actions.openAddChatPane());
+};
+
 export const selectCurrentPane = (state: RootState) => state.pane.CurrentPane;
-export const { goToAddChatPane, goToNewChatPane } = paneSlice.actions;
 export default paneSlice.reducer;

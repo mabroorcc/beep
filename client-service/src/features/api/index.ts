@@ -96,3 +96,11 @@ export const changeChatName = (chatId: string, name: string) => {
 export const destroyChat = (chatId: string) => {
   return PromisedSocketCall(O.DESTROY_CHAT, { chatId });
 };
+
+export const deleteMemberFromChat = (chatId: string, memberId: string) => {
+  return PromisedSocketCall(O.DELETE_MEMBER_FROM_CHAT, { chatId, memberId });
+};
+
+export const addThisMemberToChat = (chatId: string, memberId: string) => {
+  return PromisedSocketCall(O.ADD_MEMBER_TO_CHAT, { chatId, memberId });
+};

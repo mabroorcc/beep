@@ -30,12 +30,11 @@ export const SelectedListing: React.FC<Props> = ({ users, onDelete }) => {
 
 const useStyles = makeStyles({
   sel_main: {
-    minWidth: "100%",
+    width: "100%",
     minHeight: "2.5rem",
-    overflowX: "scroll",
-    overflowY: "hidden",
     marginBottom: "1rem",
     display: "flex",
     alignItems: "center",
+    flexWrap: "wrap",
   },
 });

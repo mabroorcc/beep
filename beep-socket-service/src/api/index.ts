@@ -106,6 +106,7 @@ export const InjectApiTo = (socket: Socket) => {
       await MemberService.addMemberToChat(memberId, chatId);
       NotificationService.notifyAddedToChat(memberId, chatId);
       socket.emit(O.ADD_MEMBER_TO_CHAT + "RES", "added");
+      socket.emit(O.ADD_MEMBER_TO_CHAT + "UPDATE", { chatId, memberId });
     } catch (e) {
       return socket.emit(O.ADD_MEMBER_TO_CHAT + "ERR", e.message);
     }
@@ -193,6 +194,16 @@ export const InjectApiTo = (socket: Socket) => {
       NotificationService.notifyChatDestroyed(chatId);
     } catch (e) {
       socket.emit(O.DESTROY_CHAT + "ERR", e.message);
+    }
+  });
+  socket.on(O.DELETE_MEMBER_FROM_CHAT, async ({ chatId, memberId }) => {
+    try {
+      if (!chatId || !memberId) throw new Error("Invalid Params!");
+      NotificationService.notifyMemberDeleted(chatId, memberId);
+      const result = await MemberService.deleteMemberFromChat(chatId, memberId);
+      socket.emit(O.DELETE_MEMBER_FROM_CHAT + "RES", result);
+    } catch (e) {
+      socket.emit(O.DELETE_MEMBER_FROM_CHAT + "ERR", e.message);
     }
   });
 };

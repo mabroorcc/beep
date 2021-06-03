@@ -8,7 +8,7 @@ import {
 import { OpenedChatHeader } from "../OpenedChatHeader";
 import { OpenedChatMessages } from "../OpenedChatMessages";
 import { OpenedChatTextBox } from "../OpenedChatTextBox";
-import { clearOpenChat, selectOpenChat } from "./openChatSlice";
+import { selectOpenChat } from "./openChatSlice";
 import { getMembersOfTheChat } from "../api";
 import { TUser } from "../user/types";
 
@@ -34,9 +34,6 @@ export const OpenedChatPane: React.FC<Props> = () => {
         })
         .catch((e) => console.log("/OpenChatPane err", e.message));
     }
-    return () => {
-      dispatch(clearOpenChat());
-    };
   }, [openChat, messageNotifications]);
 
   if (!openChat) return <></>;

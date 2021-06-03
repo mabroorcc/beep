@@ -9,6 +9,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../user/userSlice";
 import { ChangeChatNameDialog } from "../ChangeChatNameDialog";
 import { destroyChat } from "../api";
+import { EditMembersDialog } from "../EditMembersDialog";
 
 interface Props {
   chat: chat;
@@ -18,6 +19,7 @@ interface Props {
 export const OpenChatMenu: React.FC<Props> = ({ chat, members }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showChangeChatName, setShowChangeChatName] = useState(false);
+  const [showEditMembers, setShowEditMember] = useState(false);
 
   const user = useAppSelector(selectUser);
 
@@ -45,10 +47,6 @@ export const OpenChatMenu: React.FC<Props> = ({ chat, members }) => {
     setShowChangeChatName(true);
   };
 
-  const handleChangeNameClose = () => {
-    setShowChangeChatName(false);
-  };
-
   const handleDeleteChat = () => {
     const res = window.confirm("Are you sure?");
     if (res) destroyChat(chat.id);
@@ -73,7 +71,14 @@ export const OpenChatMenu: React.FC<Props> = ({ chat, members }) => {
           onClose={handleClose}
         >
           <MenuItem onClick={handleChangeChatName}>Edit Name</MenuItem>
-          <MenuItem onClick={handleEditChatClick}>Edit Members</MenuItem>
+          <MenuItem
+            onClick={() => {
+              setShowEditMember(true);
+              handleClose();
+            }}
+          >
+            Edit Members
+          </MenuItem>
           <MenuItem onClick={handleEditChatClick}>Edit Picture</MenuItem>
           <MenuItem onClick={handleDeleteChat}>Destroy Chat</MenuItem>
         </Menu>
@@ -90,8 +95,16 @@ export const OpenChatMenu: React.FC<Props> = ({ chat, members }) => {
       )}
       <ChangeChatNameDialog
         open={showChangeChatName}
-        handleClose={handleChangeNameClose}
+        handleClose={() => setShowChangeChatName(false)}
         chat={chat}
+      />
+      <EditMembersDialog
+        open={showEditMembers}
+        handleClose={() => {
+          setShowEditMember(false);
+        }}
+        chat={chat}
+        members={members}
       />
     </div>
   );

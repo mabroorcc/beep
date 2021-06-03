@@ -7,7 +7,7 @@ import { selectUser } from "../user/userSlice";
 import { BeepSocket } from "../BeepSocket";
 import { O } from "../O";
 import { addChat } from "../Chats/chatsSlice";
-import { getUsersWithUserName } from "../api";
+import { getUsersWithUserName, addThisMemberToChat } from "../api";
 
 export const useAddChatPane = () => {
   const dispatch = useAppDispatch();
@@ -79,10 +79,6 @@ export const useAddChatPane = () => {
         dispatch(goToNewChatPane());
       }
     }
-  };
-
-  const addThisMemberToChat = (chatId: string, memberId: string) => {
-    return PromisedSocketCall(O.ADD_MEMBER_TO_CHAT, { chatId, memberId });
   };
 
   const PromisedSocketCall = async (

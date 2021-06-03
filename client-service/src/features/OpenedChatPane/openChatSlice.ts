@@ -27,7 +27,7 @@ const openChatSlice = createSlice({
   name: "openChat",
   initialState,
   reducers: {
-    setOpenChat: (state, action: PayloadAction<chat>) => {
+    setOpenChat: (state, action: PayloadAction<chat | undefined>) => {
       state.chat = action.payload;
     },
     addOpenMessages: (state, action: PayloadAction<Message[]>) => {

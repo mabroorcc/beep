@@ -16,4 +16,7 @@ export const MemberService = {
   getAllTheMembersOfTheChat: (chatId: string) => {
     return Members.find({ chatId });
   },
+  deleteMemberFromChat: (chatId: string, memberId: string) => {
+    return Members.delete({ chatId, memberId });
+  },
 };

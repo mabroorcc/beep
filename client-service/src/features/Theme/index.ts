@@ -11,6 +11,9 @@ const theme = createMuiTheme({
       paper: "#23212A",
     },
   },
+  shape: {
+    borderRadius: 13,
+  },
   overrides: {
     MuiButton: {
       root: {

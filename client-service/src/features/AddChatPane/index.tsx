@@ -1,5 +1,5 @@
 import { IconButton, makeStyles, TextField } from "@material-ui/core";
-import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
+import DoneIcon from "@material-ui/icons/Done";
 import CloseIcon from "@material-ui/icons/Close";
 import { ImageSect } from "./ImgSect";
 import { UserListing } from "../UserListing";
@@ -63,7 +63,7 @@ export const AddChatPane: React.FC<Props> = () => {
           </IconButton>
           {selectedUsers.length > 0 && (
             <IconButton onClick={handleDoneBtn} className={classes.btn}>
-              <DoneOutlineIcon />
+              <DoneIcon />
             </IconButton>
           )}
         </div>
@@ -85,6 +85,7 @@ const useStyles = makeStyles({
   input: {
     marginBottom: "1rem",
     backgroundColor: "#23212A",
+    borderRadius: 13,
     width: "100%",
   },
   action_container: {
