@@ -46,31 +46,19 @@ export const NotificationService = {
     });
   },
   notifyDeletedMessage: async (messageId: number, chatId: string) => {
-    const members = await MemberService.getAllTheMembersOfTheChat(chatId);
-    members.forEach((member) => {
-      const memSocket = connections.get(member.memberId);
-      if (memSocket) {
-        memSocket.emit(O.DELETE_MESSAGE_NOTIFICATION, messageId);
-      }
+    BroadCast(chatId, (socket) => {
+      socket.emit(O.DELETE_MESSAGE_NOTIFICATION, messageId);
     });
   },
   notifyTypingMessageToChat: async (chatId: string, typerId: string) => {
-    const memebers = await MemberService.getAllTheMembersOfTheChat(chatId);
-    memebers.forEach((member) => {
-      if (member.memberId === typerId) return;
-      const mem = connections.get(member.memberId);
-      if (mem) {
-        mem.emit(O.MEMBER_TYPING_MESSAGE_IN_CHAT, typerId);
-      }
+    BroadCast(chatId, (socket, mem) => {
+      if (mem.memberId === typerId) return;
+      socket.emit(O.MEMBER_TYPING_MESSAGE_IN_CHAT, typerId);
     });
   },
   notifyChatNameChanged: async (chatId: string, name: string) => {
-    const members = await MemberService.getAllTheMembersOfTheChat(chatId);
-    members.forEach((member) => {
-      const mem = connections.get(member.memberId);
-      if (mem) {
-        mem.emit(O.CHAT_NAME_CHANGED, { chatId, name });
-      }
+    BroadCast(chatId, (socket) => {
+      socket.emit(O.CHAT_NAME_CHANGED, { chatId, name });
     });
   },
   sendPendingNotifications: (userId: string) => {
@@ -85,21 +73,13 @@ export const NotificationService = {
     }
   },
   notifyChatDestroyed: async (chatId: string) => {
-    const members = await MemberService.getAllTheMembersOfTheChat(chatId);
-    members.forEach((member) => {
-      const mem = connections.get(member.memberId);
-      if (mem) {
-        mem.emit(O.CHAT_DESTROYED, chatId);
-      }
+    BroadCast(chatId, (socket) => {
+      socket.emit(O.CHAT_DESTROYED, chatId);
     });
   },
   notifyMemberDeleted: async (chatId: string, memberId: string) => {
-    const member = await MemberService.getAllTheMembersOfTheChat(chatId);
-    member.forEach((member) => {
-      const mem = connections.get(member.memberId);
-      if (mem) {
-        mem.emit(O.NOTIFY_MEMBER_REMOVED_FROM_CHAT, { chatId, memberId });
-      }
+    BroadCast(chatId, (socket) => {
+      socket.emit(O.NOTIFY_MEMBER_REMOVED_FROM_CHAT, { chatId, memberId });
     });
   },
   notifyChatPictureChanged: async (chat: Chats) => {
