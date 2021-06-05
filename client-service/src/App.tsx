@@ -17,6 +17,7 @@ import {
 import { Socket, io } from "socket.io-client";
 import { BeepSocket } from "./features/BeepSocket";
 import { PageComponenet } from "./features/PageComponent";
+import { initializePeer, PeerContext } from "./features/Peer";
 
 function App() {
   const location = useLocation();
@@ -29,6 +30,7 @@ function App() {
       dispatch(getLogedUserAsync());
     }
     if (user) {
+      console.log("/App ", user.id);
       const socket = io("http://localhost:4003", {
         auth: { user: user, jwtId: user.jwtId },
       });
@@ -44,7 +46,9 @@ function App() {
           {user ? (
             <>
               <BeepSocket.Provider value={beepSocket}>
-                <Route exact path={HOME_PAGE_PATH} component={HomePage} />
+                <PeerContext.Provider value={initializePeer(user.id)}>
+                  <Route exact path={HOME_PAGE_PATH} component={HomePage} />
+                </PeerContext.Provider>
               </BeepSocket.Provider>
               <Route
                 exact

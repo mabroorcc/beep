@@ -1,12 +1,13 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { chat } from "../Chats/chatsSlice";
-import { AppThunk, RootState, store } from "../../app/store";
+import { AppThunk, RootState } from "../../app/store";
 import { setOpenChat } from "../OpenedChatPane/openChatSlice";
 
 export enum RightPanes {
   NEW_CHAT_PANE,
   ADD_CHAT_PANE,
   OPENED_CHAT_PANE,
+  CALL_PANE,
 }
 
 export interface PaneState {
@@ -30,6 +31,9 @@ const paneSlice = createSlice({
     goToOpenedChatPane: (state) => {
       state.CurrentPane = RightPanes.OPENED_CHAT_PANE;
     },
+    goToCallPane: (state) => {
+      state.CurrentPane = RightPanes.CALL_PANE;
+    },
   },
 });
 
@@ -48,6 +52,11 @@ export const goToNewChatPane = (): AppThunk => (dispatch) => {
 export const goToAddChatPane = (): AppThunk => (dispatch) => {
   dispatch(setOpenChat(undefined));
   dispatch(paneSlice.actions.openAddChatPane());
+};
+
+export const goToCallPane = (): AppThunk => (dispatch) => {
+  dispatch(setOpenChat(undefined));
+  dispatch(paneSlice.actions.goToCallPane());
 };
 
 export const selectCurrentPane = (state: RootState) => state.pane.CurrentPane;

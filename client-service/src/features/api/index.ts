@@ -107,3 +107,6 @@ export const addThisMemberToChat = (chatId: string, memberId: string) => {
 export const changeChatPicture = (chatId: string, picture: string) => {
   return PromisedSocketCall(O.CHANGE_CHAT_PICTURE, { chatId, picture });
 };
+export const checkIfMemberOnline = (memberId: string) => {
+  return PromisedSocketCall(O.CHECK_IF_MEMBER_ONLINE, { memberId });
+};

@@ -76,16 +76,6 @@ export const InjectApiTo = (socket: Socket) => {
     }
   });
 
-  socket.on(O.CHECK_IF_MEMBER_ONLINE, ({ memberId }, fn) => {
-    if (!memberId) return fn("no member id found");
-    const mem = connections.get(memberId);
-    if (mem) {
-      return fn(true);
-    } else {
-      fn(false);
-    }
-  });
-
   socket.on(O.GET_ALL_MY_CHATS, async () => {
     try {
       const memberShips = await MemberService.getAllTheMemberShips(thisUserId);
@@ -217,6 +207,20 @@ export const InjectApiTo = (socket: Socket) => {
       if (chat) NotificationService.notifyChatPictureChanged(chat);
     } catch (e) {
       socket.emit(O.CHANGE_CHAT_PICTURE + "ERR", e.message);
+    }
+  });
+
+  socket.on(O.CHECK_IF_MEMBER_ONLINE, ({ memberId }) => {
+    try {
+      if (!memberId) throw new Error("Invalid Params!");
+      const mem = connections.get(memberId);
+      if (mem) {
+        socket.emit(O.CHECK_IF_MEMBER_ONLINE + "RES", true);
+      } else {
+        socket.emit(O.CHECK_IF_MEMBER_ONLINE + "RES", false);
+      }
+    } catch (e) {
+      socket.emit(O.CHECK_IF_MEMBER_ONLINE + "ERR", e.message);
     }
   });
 };
