@@ -14,28 +14,26 @@ export const InjectApiTo = (socket: Socket) => {
   const thisUserId = socket.handshake.auth.user.id as string;
 
   connections.set(thisUserId, socket);
+  NotificationService.notifyMemberGotOnline(thisUserId);
 
   socket.on("disconnect", () => {
     connections.delete(thisUserId);
+    NotificationService.notifyMemberGotOffline(thisUserId);
   });
 
   socket.on(O.CONNECT, () => {
     connections.set(thisUserId, socket);
+    NotificationService.notifyMemberGotOnline(thisUserId);
+    NotificationService.sendPendingNotifications(thisUserId);
   });
 
   socket.on(O.DISCONNECT, () => {
     connections.delete(thisUserId);
+    NotificationService.notifyMemberGotOffline(thisUserId);
   });
 
   // sending all the notifications for that user as he gets online
-  const notifs = notifications.get(thisUserId);
-  if (notifs) {
-    notifs.forEach((notif) => {
-      socket.emit(notif.title, notif.data);
-    });
-  }
-  // clearing notifications
-  notifications.delete(thisUserId);
+  NotificationService.sendPendingNotifications(thisUserId);
 
   socket.on(O.CREATE_CHAT, async ({ ownerId, name, picture }) => {
     if (!ownerId || !name || !picture) {

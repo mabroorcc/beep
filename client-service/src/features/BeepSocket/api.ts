@@ -100,6 +100,20 @@ const addHandlersTo = (socket: Socket) => {
     }
     store.dispatch(replaceChat(chat));
   });
+
+  socket.on(O.MEMBER_GOT_ONLINE, ({ chatId }) => {
+    const currentOpenChat = store.getState().openChat.chat;
+    if (currentOpenChat && currentOpenChat.id === chatId) {
+      refreshOpenedChat();
+    }
+  });
+
+  socket.on(O.MEMBER_GOT_OFFLINE, ({ chatId }) => {
+    const currentOpenChat = store.getState().openChat.chat;
+    if (currentOpenChat && currentOpenChat.id === chatId) {
+      refreshOpenedChat();
+    }
+  });
 };
 
 const refreshOpenedChat = (nchat?: chat) => {

@@ -70,6 +70,7 @@ export const NotificationService = {
           user.emit(notification.title, notification.data);
         });
       }
+      notifications.delete(userId);
     }
   },
   notifyChatDestroyed: async (chatId: string) => {
@@ -85,6 +86,28 @@ export const NotificationService = {
   notifyChatPictureChanged: async (chat: Chats) => {
     BroadCast(chat.id, (socket) => {
       socket.emit(O.CHAT_PICTURE_CHANGED, chat);
+    });
+  },
+  notifyMemberGotOnline: async (memberId: string) => {
+    const memberships = await MemberService.getAllTheMemberShips(memberId);
+    memberships.forEach((memship) => {
+      BroadCast(memship.chatId, (socket) => {
+        socket.emit(O.MEMBER_GOT_ONLINE, {
+          chatId: memship.chatId,
+          memberId: memship.memberId,
+        });
+      });
+    });
+  },
+  notifyMemberGotOffline: async (memberId: string) => {
+    const memberships = await MemberService.getAllTheMemberShips(memberId);
+    memberships.forEach((memship) => {
+      BroadCast(memship.chatId, (socket) => {
+        socket.emit(O.MEMBER_GOT_OFFLINE, {
+          chatId: memship.chatId,
+          memberId: memship.memberId,
+        });
+      });
     });
   },
 };
