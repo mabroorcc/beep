@@ -57,6 +57,6 @@ const useStyles = makeStyles({
 
 const injectPeerHandlers = (peer: Peer) => {
   peer.on("call", (call) => {
-    console.log(call);
+    console.log(call.metadata);
   });
 };

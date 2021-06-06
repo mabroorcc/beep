@@ -86,7 +86,9 @@ export const CallPane: React.FC<Props> = () => {
       for (let user of selectedUsers) {
         try {
           const result: any = await getUserPeerId(user.id);
-          const call = peer.call(result.peerId, localStream);
+          const call = peer.call(result.peerId, localStream, {
+            metadata: { callerId: user.id },
+          });
           console.log(call);
         } catch (e) {
           console.log("/CallPane makeCall", e);

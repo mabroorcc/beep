@@ -31,7 +31,7 @@ function App() {
     }
     if (user) {
       const socket = io("http://localhost:4003", {
-        auth: { user: user, jwtId: user.jwtId },
+        auth: { user: { ...user, peerId: peer.id }, jwtId: user.jwtId },
       });
       setBeepSocket(socket);
     }

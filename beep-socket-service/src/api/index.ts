@@ -6,7 +6,6 @@ import { MessageService } from "../messages/messages.service";
 import {
   NotificationService,
   connections,
-  notifications,
 } from "../notifications/notification.service";
 import { O } from "../opcodes";
 
@@ -227,13 +226,8 @@ export const InjectApiTo = (socket: Socket) => {
       if (!userId) throw new Error("Invalid Params!");
       const userSocket = connections.get(userId);
       if (userSocket) {
-        userSocket.on(O.GIVE_ME_YOUR_PEER_ID + "RES", (id: string) => {
-          socket.emit(O.GET_USER_PEER_ID + "RES", { userId, peerId: id });
-        });
-        userSocket.on(O.GIVE_ME_YOUR_PEER_ID + "ERR", (err) => {
-          throw new Error(err);
-        });
-        userSocket.emit(O.GIVE_ME_YOUR_PEER_ID);
+        const peerId = userSocket.handshake.auth.user.peerId;
+        socket.emit(O.GET_USER_PEER_ID + "RES", { userId, peerId });
       } else {
         throw new Error("User not online!");
       }
