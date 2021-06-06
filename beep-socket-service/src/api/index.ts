@@ -221,4 +221,24 @@ export const InjectApiTo = (socket: Socket) => {
       socket.emit(O.CHECK_IF_MEMBER_ONLINE + "ERR", e.message);
     }
   });
+
+  socket.on(O.GET_USER_PEER_ID, ({ userId }) => {
+    try {
+      if (!userId) throw new Error("Invalid Params!");
+      const userSocket = connections.get(userId);
+      if (userSocket) {
+        userSocket.on(O.GIVE_ME_YOUR_PEER_ID + "RES", (id: string) => {
+          socket.emit(O.GET_USER_PEER_ID + "RES", { userId, peerId: id });
+        });
+        userSocket.on(O.GIVE_ME_YOUR_PEER_ID + "ERR", (err) => {
+          throw new Error(err);
+        });
+        userSocket.emit(O.GIVE_ME_YOUR_PEER_ID);
+      } else {
+        throw new Error("User not online!");
+      }
+    } catch (e) {
+      socket.emit(O.GET_USER_PEER_ID + "ERR", e.message);
+    }
+  });
 };

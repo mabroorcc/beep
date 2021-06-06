@@ -19,6 +19,7 @@ import {
   goToNewChatPane,
   goToOpenedChatPane,
 } from "../RightHomeSidePanes/paneSlice";
+import { peer } from "../Peer";
 
 let beepSocket: Socket;
 
@@ -112,6 +113,14 @@ const addHandlersTo = (socket: Socket) => {
     const currentOpenChat = store.getState().openChat.chat;
     if (currentOpenChat && currentOpenChat.id === chatId) {
       refreshOpenedChat();
+    }
+  });
+
+  socket.on(O.GIVE_ME_YOUR_PEER_ID, () => {
+    if (peer.id) {
+      socket.emit(O.GIVE_ME_YOUR_PEER_ID + "RES", peer.id);
+    } else {
+      socket.emit(O.GIVE_ME_YOUR_PEER_ID + "ERR", "peer not connected");
     }
   });
 };

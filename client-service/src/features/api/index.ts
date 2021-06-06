@@ -110,3 +110,7 @@ export const changeChatPicture = (chatId: string, picture: string) => {
 export const checkIfMemberOnline = (memberId: string) => {
   return PromisedSocketCall(O.CHECK_IF_MEMBER_ONLINE, { memberId });
 };
+
+export const getUserPeerId = (userId: string) => {
+  return PromisedSocketCall(O.GET_USER_PEER_ID, { userId });
+};

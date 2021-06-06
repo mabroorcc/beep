@@ -6,7 +6,11 @@ import { SelectedListing } from "../SelectedListing";
 import { useAppSelector } from "../../app/hooks";
 import CallIcon from "@material-ui/icons/Call";
 import { selectUser } from "../user/userSlice";
-import { checkIfMemberOnline, getUsersWithUserName } from "../api";
+import {
+  checkIfMemberOnline,
+  getUserPeerId,
+  getUsersWithUserName,
+} from "../api";
 import { PeerContext } from "../Peer";
 
 export interface Props {}
@@ -80,8 +84,13 @@ export const CallPane: React.FC<Props> = () => {
     try {
       const localStream = await getMedia();
       for (let user of selectedUsers) {
-        const call = peer.call(user.id, localStream);
-        console.log(call);
+        try {
+          const result: any = await getUserPeerId(user.id);
+          const call = peer.call(result.peerId, localStream);
+          console.log(call);
+        } catch (e) {
+          console.log("/CallPane makeCall", e);
+        }
       }
     } catch (e) {
       console.log("/CallPane handleMakeCall", e);
