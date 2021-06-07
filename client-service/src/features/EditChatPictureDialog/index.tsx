@@ -41,6 +41,8 @@ export const EditChatPictureDialog: React.FC<Props> = ({
         })
         .then(() => handleClose())
         .catch((e) => console.log("/EditChatPictureDialog ", e.message));
+    } else {
+      handleClose();
     }
   };
 
