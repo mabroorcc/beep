@@ -9,6 +9,7 @@ import { ExpandedComponenet } from "../../features/ExpandedComponenet";
 import { SideBar } from "../../features/SideBar";
 import { PeerContext } from "../../features/Peer";
 import Peer from "peerjs";
+import { Call } from "../../features/Call";
 
 export interface Props {}
 
@@ -16,6 +17,7 @@ export const HOME_PAGE_PATH = "/";
 
 export const HomePage: React.FC<Props> = () => {
   const [connected, setConnected] = useState(false);
+  const [call, setCall] = useState<Peer.MediaConnection | null>(null);
   const beepSocket = useContext(BeepSocket);
   const peer = useContext(PeerContext);
   const classes = useStyles();
@@ -25,7 +27,12 @@ export const HomePage: React.FC<Props> = () => {
       injectApi(beepSocket);
       setConnected(true);
     }
-    injectPeerHandlers(peer);
+
+    // when ever a call comes
+    peer.on("call", (call) => {
+      setCall(call);
+    });
+
     if (!beepSocket) setConnected(false);
   }, [beepSocket, peer]);
 
@@ -37,6 +44,7 @@ export const HomePage: React.FC<Props> = () => {
             <LeftHomeSide />
             <RightHomeSide />
             <SideBar />
+            {call && <Call call={call} setCall={setCall} />}
           </div>
         </ExpandedComponenet>
       ) : (
@@ -54,9 +62,3 @@ const useStyles = makeStyles({
     height: "100vh",
   },
 });
-
-const injectPeerHandlers = (peer: Peer) => {
-  peer.on("call", (call) => {
-    console.log(call.metadata);
-  });
-};
