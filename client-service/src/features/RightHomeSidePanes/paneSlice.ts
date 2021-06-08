@@ -7,7 +7,6 @@ export enum RightPanes {
   NEW_CHAT_PANE,
   ADD_CHAT_PANE,
   OPENED_CHAT_PANE,
-  CALL_PANE,
 }
 
 export interface PaneState {
@@ -31,9 +30,6 @@ const paneSlice = createSlice({
     goToOpenedChatPane: (state) => {
       state.CurrentPane = RightPanes.OPENED_CHAT_PANE;
     },
-    goToCallPane: (state) => {
-      state.CurrentPane = RightPanes.CALL_PANE;
-    },
   },
 });
 
@@ -52,11 +48,6 @@ export const goToNewChatPane = (): AppThunk => (dispatch) => {
 export const goToAddChatPane = (): AppThunk => (dispatch) => {
   dispatch(setOpenChat(undefined));
   dispatch(paneSlice.actions.openAddChatPane());
-};
-
-export const goToCallPane = (): AppThunk => (dispatch) => {
-  dispatch(setOpenChat(undefined));
-  dispatch(paneSlice.actions.goToCallPane());
 };
 
 export const selectCurrentPane = (state: RootState) => state.pane.CurrentPane;

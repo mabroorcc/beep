@@ -5,7 +5,6 @@ import { NewChatPane } from "../NewChatPane";
 import { selectCurrentPane } from "../RightHomeSidePanes/paneSlice";
 import { AddChatPane } from "../AddChatPane";
 import { OpenedChatPane } from "../OpenedChatPane";
-import { CallPane } from "../CallPane";
 
 export interface Props {}
 
@@ -18,7 +17,6 @@ export const RightHomeSide: React.FC<Props> = () => {
       {CurrentPane === RightPanes.NEW_CHAT_PANE && <NewChatPane />}
       {CurrentPane === RightPanes.ADD_CHAT_PANE && <AddChatPane />}
       {CurrentPane === RightPanes.OPENED_CHAT_PANE && <OpenedChatPane />}
-      {CurrentPane === RightPanes.CALL_PANE && <CallPane />}
     </div>
   );
 };
