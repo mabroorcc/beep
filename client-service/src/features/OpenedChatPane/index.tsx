@@ -34,7 +34,7 @@ export const OpenedChatPane: React.FC<Props> = () => {
         })
         .catch((e) => console.log("/OpenChatPane err", e.message));
     }
-  }, [openChat, messageNotifications]);
+  }, [openChat, messageNotifications, dispatch]);
 
   if (!openChat) return <></>;
   return (

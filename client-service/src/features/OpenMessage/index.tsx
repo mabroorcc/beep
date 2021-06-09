@@ -58,7 +58,11 @@ export const OpenMessage: React.FC<Props> = ({ message, last, sender }) => {
         <div>
           <div>{message.message}</div>
           {message.attType === "image" && (
-            <img className={classes.att} src={message.attachment} />
+            <img
+              className={classes.att}
+              src={message.attachment}
+              alt="message picture"
+            />
           )}
           {message.attType === "video" && (
             <video controls className={classes.att} src={message.attachment} />

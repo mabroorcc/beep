@@ -221,18 +221,7 @@ export const InjectApiTo = (socket: Socket) => {
     }
   });
 
-  socket.on(O.GET_USER_PEER_ID, ({ userId }) => {
-    try {
-      if (!userId) throw new Error("Invalid Params!");
-      const userSocket = connections.get(userId);
-      if (userSocket) {
-        const peerId = userSocket.handshake.auth.user.peerId;
-        socket.emit(O.GET_USER_PEER_ID + "RES", { userId, peerId });
-      } else {
-        throw new Error("User not online!");
-      }
-    } catch (e) {
-      socket.emit(O.GET_USER_PEER_ID + "ERR", e.message);
-    }
+  socket.on(O.GET_USER_PEER_ID, () => {
+    return socket.emit(O.GET_USER_PEER_ID + "RES", "NOT_SUPPORTED_ANYMORE");
   });
 };

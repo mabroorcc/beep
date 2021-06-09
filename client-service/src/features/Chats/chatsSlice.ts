@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { act } from "@testing-library/react";
 import { RootState } from "../../app/store";
 
 export interface chat {

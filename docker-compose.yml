@@ -87,11 +87,6 @@ services:
       - 5433
     command: -p 5433
 
-  stun-service:
-    build: ./stun-service
-    ports:
-      - "4004:4004"
-
   client-service:
     build: ./client-service
     volumes:

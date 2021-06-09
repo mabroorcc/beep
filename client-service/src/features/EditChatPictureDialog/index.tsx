@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CloseIcon from "@material-ui/icons/Close";
 import {
   IconButton,
   DialogActions,
   Dialog,
-  makeStyles,
   DialogContent,
   DialogTitle,
 } from "@material-ui/core";
