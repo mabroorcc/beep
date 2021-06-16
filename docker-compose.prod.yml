@@ -1,0 +1,102 @@
+version: "3"
+
+services:
+  loadbalancer:
+    image: nginx:alpine
+    volumes:
+      - ./configs/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - files:/usr/share/nginx/files
+    ports:
+      - "4000:4000"
+    depends_on:
+      - auth-service
+
+  auth-service:
+    build: ./auth-service
+    environment:
+      PORT: 4001
+      DATABASE_HOST: auth-db
+      DATABASE_PASSWORD: pwd
+      DATABASE_USER: postgres
+      DATABASE: authdb
+      DATABASE_PORT: 5432
+      REDIS_URL: redis://authcache
+    volumes:
+      - ./auth-service/src:/app/src
+    expose:
+      - 4001
+
+    depends_on:
+      - auth-db
+      - auth-cache
+
+  auth-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_USER: postgres
+      POSTGRES_DB: authdb
+    volumes:
+      - authdb:/var/lib/postgresql/data
+    expose:
+      - 5432
+
+  auth-cache:
+    image: redis:alpine
+    container_name: authcache
+    expose:
+      - 6379
+
+  file-service:
+    build: ./file-service
+    volumes:
+      - ./file-service/src:/app/src
+      - files:/app/files
+    environment:
+      FILE_SERVICE_PORT: 4002
+
+    ports:
+      - "4002:4002"
+
+  beep-socket-service:
+    build: ./beep-socket-service
+    environment:
+      BEEP_SOCKET_SERVICE_PORT: 4003
+      BEEP_SOCKET_SERVICE_DBHOST: socket-db
+      BEEP_SOCKET_SERVICE_DBPASSWORD: pwd
+      BEEP_SOCKET_SERVICE_DBUSER: postgres
+      BEEP_SOCKET_SERVICE_DB: socketdb
+      BEEP_SOCKET_SERVICE_DBPORT: 5433
+    ports:
+      - "4003:4003"
+    volumes:
+      - ./beep-socket-service/src:/app/src
+    depends_on:
+      - socket-db
+
+  socket-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_USER: postgres
+      POSTGRES_DB: socketdb
+      POSTGRES_PORT: 5433
+    volumes:
+      - socketdb:/var/lib/postgresql/data
+    expose:
+      - 5433
+    command: -p 5433
+
+  client-service:
+    build:
+      context: ./client-service
+      dockerfile: Dockerfile.prod
+      args:
+        - FILE_SERVICE_HOST="http://localhost:4002"
+        - AUTH_SERVICE_HOST="http://localhost:4000/auth"
+        - SOCKET_SERVICE_HOST="http://localhost:4003"
+
+volumes:
+  authdb:
+  files:
+  socketdb:

@@ -17,6 +17,7 @@ import {
 import { Socket, io } from "socket.io-client";
 import { BeepSocket } from "./features/BeepSocket";
 import { PageComponenet } from "./features/PageComponent";
+import { ENV } from "./env";
 
 function App() {
   const location = useLocation();
@@ -29,7 +30,7 @@ function App() {
       dispatch(getLogedUserAsync());
     }
     if (user) {
-      const socket = io("http://localhost:4003", {
+      const socket = io(ENV.SOCKET_SERVICE_HOST, {
         auth: { user, jwtId: user.jwtId },
       });
       setBeepSocket(socket);

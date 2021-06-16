@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
+import { getMemberDetails } from "../api";
 import { chat } from "../Chats/chatsSlice";
 import { jsonReq } from "../JSON";
 import { selectMessageNotifications } from "../MessageNotifications/messageNotificationSlice";
@@ -130,7 +131,3 @@ const useStyles = makeStyles({
     color: "#333",
   },
 });
-
-const getMemberDetails = async (id: string) => {
-  return jsonReq("http://localhost:4000/auth/users/find/user/" + id);
-};

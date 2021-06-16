@@ -12,6 +12,7 @@ import { uploadFileAction } from "../../features/FileUpload/uploadSlice";
 import { jsonReq } from "../../features/JSON";
 import { HOME_PAGE_PATH } from "../home";
 import { useHistory } from "react-router-dom";
+import { ENV } from "../../env";
 
 export const CHANGE_PROFILE_PAGE_PATH = "/change/profile";
 
@@ -67,7 +68,7 @@ export const ChangeProfile: React.FC = () => {
   };
 
   const requestToChangeProfile = async (picture: string) => {
-    return jsonReq("http://localhost:4000/auth/users/change/picture", "post", {
+    return jsonReq(`${ENV.AUTH_SERVICE_HOST}/users/change/picture`, "post", {
       picture,
     });
   };

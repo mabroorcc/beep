@@ -21,6 +21,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import { CHANGE_PROFILE_PAGE_PATH } from "../ChangeProfile";
 import { jsonReq } from "../../features/JSON";
 import { HOME_PAGE_PATH } from "../home";
+import { ENV } from "../../env";
 
 export interface Props {}
 
@@ -45,19 +46,19 @@ export const ChangeUserDetails: React.FC<Props> = () => {
   const checkUserName = async () => {
     if (userName.length < 7) return setUserError(true);
     if (userName === user?.userName) return;
-    const url = `http://localhost:4000/auth/users/check/username/${userName}`;
+    const url = `${ENV.AUTH_SERVICE_HOST}/users/check/username/${userName}`;
     const res: Response = await fetch(url);
     if (!res.ok) return setUserError(true);
     setUserError(false);
   };
 
   const changeName = async () => {
-    return jsonReq(`http://localhost:4000/auth/users/change/name`, "post", {
+    return jsonReq(`${ENV.AUTH_SERVICE_HOST}/users/change/name`, "post", {
       name: fullName,
     });
   };
   const changeUserName = () => {
-    return jsonReq(`http://localhost:4000/auth/users/change/username`, "post", {
+    return jsonReq(`${ENV.AUTH_SERVICE_HOST}/users/change/username`, "post", {
       userName,
     });
   };
@@ -151,6 +152,7 @@ const useStyles = makeStyles((theme) => {
       width: "100%",
       backgroundColor: theme.palette.background.paper,
       marginBottom: "1rem",
+      borderRadius: 10,
     },
     typo: {
       marginBottom: "1rem",

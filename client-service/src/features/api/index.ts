@@ -3,6 +3,7 @@ import { PromisedSocketCall } from "../BeepSocket/api";
 import { jsonReq } from "../JSON";
 import { TUser } from "../user/types";
 import { Message } from "../OpenedChatPane/openChatSlice";
+import { ENV } from "../../env";
 
 export const getMembersOfTheChat = async (id: string) => {
   const members: any = await PromisedSocketCall(O.GET_ALL_MEMBERS_OF_CHAT, {
@@ -18,6 +19,10 @@ export const getMembersOfTheChat = async (id: string) => {
   return users as TUser[];
 };
 
+export const getMemberDetails = async (id: string) => {
+  return jsonReq(`${ENV.AUTH_SERVICE_HOST}/users/find/user/` + id);
+};
+
 export const getOnlineMembersOfTheChat = async (id: string) => {
   const members: any = await PromisedSocketCall(O.GET_ONLINE_MEMBERS_OF_CHAT, {
     chatId: id,
@@ -27,7 +32,7 @@ export const getOnlineMembersOfTheChat = async (id: string) => {
 
 export const getUsersWithUserName = async (userName: string) => {
   const response = await jsonReq(
-    `http://localhost:4000/auth/users/find/username/${userName}`,
+    `${ENV.AUTH_SERVICE_HOST}/users/find/username/${userName}`,
     "get",
     null
   );
@@ -40,14 +45,14 @@ export const getUsersWithUserName = async (userName: string) => {
 };
 
 export const logout = async () => {
-  const response = await jsonReq("http://localhost:4000/auth/a/signout");
+  const response = await jsonReq(`${ENV.AUTH_SERVICE_HOST}/a/signout`);
   if (response.ok) return true;
   return false;
 };
 
 export const getOneUserWithId = async (id: string) => {
   const response = await jsonReq(
-    "http://localhost:4000/auth/users/find/user/" + id,
+    `${ENV.AUTH_SERVICE_HOST}/users/find/user/` + id,
     "get"
   );
   if (response.ok) {

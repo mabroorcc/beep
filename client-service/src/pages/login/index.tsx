@@ -11,6 +11,7 @@ import { selectUser } from "../../features/user/userSlice";
 import { HOME_PAGE_PATH } from "../home";
 import { useHistory } from "react-router-dom";
 import { CHANGE_USER_DETAILS_PAGE_PATH } from "../ChangeUserDetails";
+import { ENV } from "../../env";
 
 export interface Props {}
 
@@ -28,7 +29,7 @@ export const LoginPage: React.FC<Props> = () => {
   }, [user, history]);
 
   const handleLogin = () => {
-    window.location.replace("http://localhost:4000/auth/a/login/google");
+    window.location.replace(`${ENV.AUTH_SERVICE_HOST}/a/login/google`);
   };
 
   return (

@@ -2,6 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import io from "socket.io-client";
 import { AppThunk } from "../../app/store";
 import { RootState } from "../../app/store";
+import { ENV } from "../../env";
 
 export interface UploadState {
   uploading: boolean;
@@ -49,7 +50,7 @@ export const uploadFileAction =
     if (!user) return;
 
     // dispatch an action to connect to file server
-    const fsSocket = io("http://localhost:4002", {
+    const fsSocket = io(ENV.FILE_SERVICE_HOST, {
       auth: { jwtId: user.jwtId, user: user },
     });
 

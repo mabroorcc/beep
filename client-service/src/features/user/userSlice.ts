@@ -1,5 +1,6 @@
 import { createAsyncThunk, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
+import { ENV } from "../../env";
 
 export interface User {
   id: string;
@@ -23,7 +24,7 @@ const initialState: UserState = {
 
 export const getCurrentUser = async () => {
   try {
-    const res = await fetch("http://localhost:4000/auth/a/current/user");
+    const res = await fetch(ENV.AUTH_SERVICE_HOST + "/a/current/user");
     if (res.ok) {
       const json = await res.json();
       if (json.payload && json.payload.user) return json.payload.user as User;

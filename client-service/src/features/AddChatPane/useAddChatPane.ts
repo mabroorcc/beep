@@ -8,12 +8,13 @@ import { BeepSocket } from "../BeepSocket";
 import { O } from "../O";
 import { addChat } from "../Chats/chatsSlice";
 import { getUsersWithUserName, addThisMemberToChat } from "../api";
+import { ENV } from "../../env";
 
 export const useAddChatPane = () => {
   const dispatch = useAppDispatch();
   const beepSocket = useContext(BeepSocket);
   const [chatname, setChatName] = useState("");
-  const [image, setImage] = useState("http://picsum.photos/400/400");
+  const [image, setImage] = useState(ENV.DEFAULT_CHAT_IMAGE_URL);
   const [blobImage, setBlobImage] = useState<Blob>();
   const [userResults, setUserResults] = useState<TUser[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<TUser[]>([]);
@@ -51,7 +52,7 @@ export const useAddChatPane = () => {
     if (blobImage) {
       url = await PromisedFileUpload("chat-picture", blobImage);
     } else {
-      url = "http://picsum.photos/400/400";
+      url = ENV.DEFAULT_CHAT_IMAGE_URL;
     }
     const chat = await createChatRequest(user.id, chatname, url);
     if (chat.id) {
