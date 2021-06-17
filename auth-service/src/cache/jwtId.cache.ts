@@ -1,6 +1,7 @@
 import redis from "redis";
 
-const REDIS_URL = process.env.REDIS_URL || "redis://authcache";
+const REDIS_URL = process.env.REDIS_URL;
+if (!REDIS_URL) throw new Error("REDIS_URL not found!");
 
 const client = redis.createClient(REDIS_URL);
 
