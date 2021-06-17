@@ -8,17 +8,24 @@ import { Messages } from "./messages/messages.entity";
 import { InjectApiTo } from "./api";
 
 // Env
-const PORT = process.env.BEEP_SOCKET_SERVICE_PORT || 4003;
-const DBHOST = process.env.BEEP_SOCKET_SERVICE_DBHOST || "localhost";
-const DBPASSWORD = process.env.BEEP_SOCKET_SERVICE_DBPASSWORD || "pwd";
-const DBUSER = process.env.BEEP_SOCKET_SERVICE_DBUSER || "postgres";
-const DB = process.env.BEEP_SOCKET_SERVICE_DB || "test";
-const DBPORT = process.env.BEEP_SOCKET_SERVICE_DBPORT || 5433;
+const PORT = process.env.BEEP_SOCKET_SERVICE_PORT;
+const DBHOST = process.env.BEEP_SOCKET_SERVICE_DBHOST;
+const DBPASSWORD = process.env.BEEP_SOCKET_SERVICE_DBPASSWORD;
+const DBUSER = process.env.BEEP_SOCKET_SERVICE_DBUSER;
+const DB = process.env.BEEP_SOCKET_SERVICE_DB;
+const DBPORT = process.env.BEEP_SOCKET_SERVICE_DBPORT;
+export const AuthServiceUrl = process.env.AUTH_SERVICE_URL;
+
+if (!PORT) throw new Error("BEEP_SOCKET_SERVICE_PORT was not found!");
+if (!DBHOST) throw new Error("BEEP_SOCKET_SERVICE_DBHOST was not found!");
+if (!DBPASSWORD)
+  throw new Error("BEEP_SOCKET_SERVICE_DBPASSWORD was not found!");
+if (!DBUSER) throw new Error("BEEP_SOCKET_SERVICE_DBUSER was not found!");
+if (!DB) throw new Error("BEEP_SOCKET_SERVICE_DB was not found!");
+if (!DBPORT) throw new Error("BEEP_SOCKET_SERVICE_DBPORT was not found!");
+if (!AuthServiceUrl) throw new Error("AUTH_SERVICE_URL was not found!");
 
 const io = new SocketIo.Server({ cors: { origin: "*" } });
-
-export const AuthServiceUrl =
-  process.env.AUTH_SERVICE_URL || "http://auth-service:4001";
 
 // auth middleware
 io.use(async (socket, next) => {
