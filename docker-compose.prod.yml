@@ -12,7 +12,9 @@ services:
       - auth-service
 
   auth-service:
-    build: ./auth-service
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile.prod
     environment:
       PORT: 4001
       DATABASE_HOST: auth-db
@@ -21,8 +23,6 @@ services:
       DATABASE: authdb
       DATABASE_PORT: 5432
       REDIS_URL: redis://authcache
-    volumes:
-      - ./auth-service/src:/app/src
     expose:
       - 4001
 

@@ -8,12 +8,19 @@ import { UsersEntity } from "./users/users.entity";
 import cors from "cors";
 
 // Env
-const PORT = process.env.PORT || 4001;
-const DATABASE_HOST = process.env.DATABASE_HOST || "auth-db";
-const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || "pwd";
-const DATABASE_USER = process.env.DATABASE_USER || "postgres";
-const DATABASE = process.env.DATABASE || "authdb";
-const DATABASE_PORT = process.env.DATABASE_PORT || 5432;
+const PORT = process.env.PORT;
+const DATABASE_HOST = process.env.DATABASE_HOST;
+const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
+const DATABASE_USER = process.env.DATABASE_USER;
+const DATABASE = process.env.DATABASE;
+const DATABASE_PORT = process.env.DATABASE_PORT;
+
+if (!PORT) throw new Error("PORT not found!");
+if (!DATABASE_HOST) throw new Error("DATABASE_HOST not found!");
+if (!DATABASE_PASSWORD) throw new Error("DATABASE_PASSWORD not found!");
+if (!DATABASE_USER) throw new Error("DATABASE_USER not found!");
+if (!DATABASE) throw new Error("DATABASE not found!");
+if (!DATABASE_PORT) throw new Error("DATABASE_PORT not found!");
 
 const app = express();
 
@@ -25,10 +32,6 @@ app.use(cookieParser());
 
 app.use("/a", authController);
 app.use("/users", usersController);
-
-//app.use("*", (req, res) => {
-//res.status(404).send("Endpoint not found!" + JSON.stringify(req.body));
-//});
 
 // Retry logic for database
 let connectionAtempts = 0;
