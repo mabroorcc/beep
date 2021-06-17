@@ -59,7 +59,9 @@ services:
       - "4002:4002"
 
   beep-socket-service:
-    build: ./beep-socket-service
+    build:
+      context: ./beep-socket-service
+      dockerfile: Dockerfile.prod
     environment:
       BEEP_SOCKET_SERVICE_PORT: 4003
       BEEP_SOCKET_SERVICE_DBHOST: socket-db
@@ -67,6 +69,7 @@ services:
       BEEP_SOCKET_SERVICE_DBUSER: postgres
       BEEP_SOCKET_SERVICE_DB: socketdb
       BEEP_SOCKET_SERVICE_DBPORT: 5433
+      AUTH_SERVICE_URL: http://auth-service:4001
     ports:
       - "4003:4003"
     volumes:
@@ -92,9 +95,9 @@ services:
       context: ./client-service
       dockerfile: Dockerfile.prod
     environment:
-      - FILE_SERVICE_HOST="http://localhost:4002"
-      - AUTH_SERVICE_HOST="http://localhost:4000/auth"
-      - SOCKET_SERVICE_HOST="http://localhost:4003"
+      FILE_SERVICE_HOST: http://localhost:4002
+      AUTH_SERVICE_HOST: http://localhost:4000/auth
+      SOCKET_SERVICE_HOST: http://localhost:4003
 
 volumes:
   authdb:

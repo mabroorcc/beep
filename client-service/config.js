@@ -9,9 +9,9 @@ if (!AUTH_SERVICE_HOST) throw new Error("auth service host was not found!");
 if (!SOCKET_SERVICE_HOST) throw new Error("socket service host was not found!");
 
 const data = `export const ENV = {
-  FILE_SERVICE_HOST: ${FILE_SERVICE_HOST},
-  AUTH_SERVICE_HOST: ${AUTH_SERVICE_HOST},
-  SOCKET_SERVICE_HOST: ${SOCKET_SERVICE_HOST},
+  FILE_SERVICE_HOST: "${FILE_SERVICE_HOST}",
+  AUTH_SERVICE_HOST: "${AUTH_SERVICE_HOST}",
+  SOCKET_SERVICE_HOST: "${SOCKET_SERVICE_HOST}",
   DEFAULT_CHAT_IMAGE_URL: "http://picsum.photos/400/400",
 }`;
 
