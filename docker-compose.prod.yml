@@ -48,12 +48,14 @@ services:
       - 6379
 
   file-service:
-    build: ./file-service
+    build:
+      context: ./file-service
+      dockerfile: Dockerfile.prod
     volumes:
-      - ./file-service/src:/app/src
       - files:/app/files
     environment:
       FILE_SERVICE_PORT: 4002
+      AUTH_SERVICE_URL: http://auth-service:4001
 
     ports:
       - "4002:4002"

@@ -6,8 +6,11 @@ import path from "path";
 
 const io = new SocketIo.Server({ cors: { origin: "*" } });
 
-export const AuthServiceUrl =
-  process.env.AUTH_SERVICE_URL || "http://auth-service:4001";
+const PORT = process.env.FILE_SERVICE_PORT;
+const AuthServiceUrl = process.env.AUTH_SERVICE_URL;
+
+if (!PORT) throw new Error("FILE_SERVICE_PORT was not found!");
+if (!AuthServiceUrl) throw new Error("AUTH_SERVICE_URL was not found!");
 
 // auth middleware
 io.use(async (socket, next) => {
@@ -152,7 +155,5 @@ const getValidatedFileUploadArgs = (
 
   return { fileName, fileSize, chunkSize };
 };
-
-const PORT = process.env.FILE_SERVICE_PORT || 4002;
 
 io.listen(Number(PORT));
