@@ -93,9 +93,7 @@ services:
     command: -p 5433
 
   client-service:
-    build:
-      context: ./client-service
-      dockerfile: Dockerfile.prod
+    image: docker.io/beepchat/beep-web-client:dep-less
     environment:
       FILE_SERVICE_HOST: http://localhost:4002
       AUTH_SERVICE_HOST: http://localhost:4000/auth
