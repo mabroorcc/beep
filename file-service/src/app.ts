@@ -7,9 +7,11 @@ import path from "path";
 const io = new SocketIo.Server({ cors: { origin: "*" } });
 
 const PORT = process.env.FILE_SERVICE_PORT;
+const FILES_HOST = process.env.FILES_HOST;
 const AuthServiceUrl = process.env.AUTH_SERVICE_URL;
 
 if (!PORT) throw new Error("FILE_SERVICE_PORT was not found!");
+if (!FILES_HOST) throw new Error("FILES_HOST was not found!");
 if (!AuthServiceUrl) throw new Error("AUTH_SERVICE_URL was not found!");
 
 // auth middleware
@@ -100,7 +102,7 @@ io.on("connection", (socket: Socket) => {
         // emit the finish event and send the url
         socket.emit(
           "file-upload-finish",
-          `http://localhost:4000/files/${fileId}${fileMetadata.fileName}`
+          `${FILES_HOST}/${fileId}${fileMetadata.fileName}`
         );
 
         // remove the job because its finished
