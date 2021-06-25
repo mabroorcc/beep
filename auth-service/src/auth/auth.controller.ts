@@ -12,6 +12,10 @@ import { ServerException } from "../exceptions";
 import { StatusCodes } from "http-status-codes";
 import authMiddleWare from "../middlewares/auth.middleware";
 
+const AFTER_LOGIN_REDIRECT_URI = process.env.AFTER_LOGIN_REDIRECT_URI;
+if (!AFTER_LOGIN_REDIRECT_URI)
+  throw new Error("AFTER_LOGIN_REDIRECT_URI not found");
+
 const authRouter = Router();
 
 //
@@ -69,7 +73,7 @@ authRouter.get("/login/google/callback", async (req, res) => {
     res.cookie("new", String(newuser));
 
     // here user is logged in now and we should redirect him to website
-    res.redirect("http://localhost:4000");
+    res.redirect(AFTER_LOGIN_REDIRECT_URI);
   } catch (e) {
     Responder.Error(res, StatusCodes.INTERNAL_SERVER_ERROR, e.message, e);
   }

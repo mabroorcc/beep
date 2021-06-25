@@ -23,6 +23,13 @@ services:
       DATABASE: authdb
       DATABASE_PORT: 5432
       REDIS_URL: redis://authcache
+      AFTER_LOGIN_REDIRECT_URI: http://localhost:4000
+      CLIENT_ID: 176671414954-gcdpafpbdqceelqfdi46dg54arbldibk.apps.googleusercontent.com
+      CLIENT_SECRET: owFoBlYLWRDmFRcIAY3WFUP_
+      JWT_SECRET: Hsd0F6-_nzSrSiFbaP
+      GOOGLE_USER_EMAIL_SCOPE: https://www.googleapis.com/auth/userinfo.email
+      GOOGLE_USER_PROFILE_SCOPE: https://www.googleapis.com/auth/userinfo.profile
+      AUTH_REDIRECT_URI: http://localhost:4000/auth/a/login/google/callback
     expose:
       - 4001
 

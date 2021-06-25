@@ -2,9 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import * as Responder from "../responder";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../credentials";
 import { checkJwtIdInCache } from "../cache/jwtId.cache";
 import { getUserById } from "../users/users.service";
+
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) throw new Error("JWT_SECRET not found");
 
 export interface IUserJwt {
   id: string;

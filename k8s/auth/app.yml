@@ -1,0 +1,66 @@
+# Deployment for the auth
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service-deployment
+  labels:
+    app: auth-deployment
+spec:
+  selector:
+    matchLabels:
+      app: auth-pod
+  template:
+    metadata:
+      name: auth-pod
+      labels:
+        app: auth-pod
+    spec:
+      containers:
+        - name: auth-container
+          image: beepchat/beep-auth-service:dep-less
+          ports:
+            - containerPort: 80
+              name: auth-cont-port
+          env:
+            - name: PORT
+              value: "80"
+            - name: DATABASE_HOST
+              value: auth-db-service
+            - name: DATABASE_PASSWORD
+              value: pwd
+            - name: DATABASE_USER
+              value: postgres
+            - name: DATABASE
+              value: authdb
+            - name: DATABASE_PORT
+              value: "80"
+            - name: REDIS_URL
+              value: "redis://auth-cache-service"
+            - name: AFTER_LOGIN_REDIRECT_URI
+              value: "http://localhost:4000"
+            - name: CLIENT_ID
+              value: "176671414954-gcdpafpbdqceelqfdi46dg54arbldibk.apps.googleusercontent.com"
+            - name: CLIENT_SECRET
+              value: "owFoBlYLWRDmFRcIAY3WFUP_"
+            - name: JWT_SECRET
+              value: "Hsd0F6-_nzSrSiFbaP"
+            - name: GOOGLE_USER_EMAIL_SCOPE
+              value: "https://www.googleapis.com/auth/userinfo.email"
+            - name: GOOGLE_USER_PROFILE_SCOPE
+              value: "https://www.googleapis.com/auth/userinfo.profile"
+            - name: AUTH_REDIRECT_URI
+              value: "http://localhost:4000/auth/a/login/google/callback"
+---
+# auth-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  labels:
+    app: auth-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: auth-pod

@@ -3,9 +3,11 @@ import { ServerException } from "../exceptions";
 import { CreateUserDto } from "../users/dto/createUser.dto";
 import * as userService from "../users/users.service";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../credentials";
 import { v4 } from "uuid";
 import * as jwtCache from "../cache/jwtId.cache";
+
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) throw new Error("JWT_SECRET not found");
 
 export const getTokenByLogin = async (
   payload: any

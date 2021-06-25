@@ -1,0 +1,35 @@
+# Cache for auth
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-cache
+  labels:
+    app: auth-cache
+spec:
+  selector:
+    matchLabels:
+      app: auth-cache-pod
+  template:
+    metadata:
+      name: auth-cache-pod
+      labels:
+        app: auth-cache-pod
+    spec:
+      containers:
+        - name: auth-cache-container
+          image: redis:alpine
+---
+# Service for auth cache
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-cache-service
+  labels:
+    app: auth-cache-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 6379
+      name: auth-cache-port
+  selector:
+    app: auth-cache-pod

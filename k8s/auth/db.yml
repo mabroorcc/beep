@@ -1,0 +1,64 @@
+# Service for db statefull set
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-db-service
+  labels:
+    app: auth-db-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 5432
+      name: auth-db-port
+  selector:
+    app: auth-db-pod
+---
+# Pvc claim for db
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: auth-db-vol-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# Database for auth
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: auth-db
+spec:
+  selector:
+    matchLabels:
+      app: auth-db-pod
+  replicas: 1
+  serviceName: "auth-db-service"
+  template:
+    metadata:
+      labels:
+        app: auth-db-pod
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: auth-db-container
+          image: postgres:alpine
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "pwd"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_DB
+              value: "authdb"
+          ports:
+            - containerPort: 5432
+              name: db-port
+          volumeMounts:
+            - name: auth-vol
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: auth-vol
+          persistentVolumeClaim:
+            claimName: auth-db-vol-claim
