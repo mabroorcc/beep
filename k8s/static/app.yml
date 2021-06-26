@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static-service-deployment
+  labels:
+    app: static-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: static-pod
+  template:
+    metadata:
+      name: static-pod
+      labels:
+        app: static-pod
+    spec:
+      containers:
+        - name: static-container
+          image: beepchat/beep-static-service:prod
+          ports:
+            - containerPort: 80
+              name: static-cont-port
+          volumeMounts:
+            - name: files-vol
+              mountPath: /usr/share/nginx/files
+      volumes:
+        - name: files-vol
+          persistentVolumeClaim:
+            claimName: files-persistent-volume-claim
+---
+# file-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: static-service
+  labels:
+    app: static-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: static-pod

@@ -1,0 +1,53 @@
+# Deployment for socket service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: socket-service-deployment
+  labels:
+    app: socket-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: socket-pod
+  template:
+    metadata:
+      name: socket-pod
+      labels:
+        app: socket-pod
+    spec:
+      containers:
+        - name: socket-container
+          image: beepchat/beep-socket-service:dep-less
+          ports:
+            - containerPort: 80
+              name: socket-cont-port
+          env:
+            - name: BEEP_SOCKET_SERVICE_PORT
+              value: 80
+            - name: BEEP_SOCKET_SERVICE_DBHOST
+              value: socket-db-service
+            - name: BEEP_SOCKET_SERVICE_DBPASSWORD
+              value: pwd
+            - name: BEEP_SOCKET_SERVICE_DBUSER
+              value: postgres
+            - name: BEEP_SOCKET_SERVICE_DB
+              value: socketdb
+            - name: BEEP_SOCKET_SERVICE_DBPORT
+              value: 80
+            - name: AUTH_SERVICE_URL
+              value: http://auth-service:80
+
+---
+# socket-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: socket-service
+  labels:
+    app: socket-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: socket-pod

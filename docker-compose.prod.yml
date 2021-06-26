@@ -1,15 +1,21 @@
 version: "3"
-
 services:
   loadbalancer:
     image: nginx:alpine
     volumes:
       - ./configs/nginx.prod.conf:/etc/nginx/nginx.conf:ro
-      - files:/usr/share/nginx/files
     ports:
       - "4000:4000"
     depends_on:
       - auth-service
+      - static-service
+
+  static-service:
+    build:
+      context: ./static-service
+      dockerfile: Dockerfile.prod
+    volumes:
+      - files:/usr/share/nginx/files
 
   auth-service:
     build:
@@ -82,8 +88,6 @@ services:
       AUTH_SERVICE_URL: http://auth-service:4001
     ports:
       - "4003:4003"
-    volumes:
-      - ./beep-socket-service/src:/app/src
     depends_on:
       - socket-db
 

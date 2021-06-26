@@ -1,0 +1,11 @@
+# PersistentVolumeClaim for file-service and static service
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: files-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

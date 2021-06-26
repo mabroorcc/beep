@@ -1,0 +1,65 @@
+# Database for beep socket service
+# Service for database
+apiVersion: v1
+kind: Service
+metadata:
+  name: socket-db-service
+  labels:
+    app: socket-db-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 5432
+      name: socket-db-port
+  selector:
+    app: socket-db-pod
+---
+# PersistentVolumeClaim for socket-db
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: socket-db-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# Database stateful set
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: socket-db
+spec:
+  selector:
+    matchLabels:
+      app: socket-db-pod
+  replicas: 1
+  serviceName: "socket-db-service"
+  template:
+    metadata:
+      labels:
+        app: socket-db-pod
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: socket-db-container
+          image: postgres:alpine
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "pwd"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_DB
+              value: "socketdb"
+          ports:
+            - containerPort: 5432
+              name: socket-db-port
+          volumeMounts:
+            - name: socket-vol
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: socket-vol
+          persistentVolumeClaim:
+            claimName: socket-db-persistent-volume-claim

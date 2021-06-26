@@ -1,0 +1,63 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: beep-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: beepchat.com
+      http:
+        paths:
+          # for all routes on beepchat.com
+          - path: "/*"
+            pathType: Prefix
+            backend:
+              service:
+                name: client-service
+                port:
+                  number: 80
+
+    - host: auth.beepchat.com
+      http:
+        paths:
+          - path: "/*"
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 80
+
+    - host: static.beepchat.com
+      http:
+        paths:
+          - path: "/*"
+            pathType: Prefix
+            backend:
+              service:
+                name: static-service
+                port:
+                  number: 80
+
+    - host: file.beepchat.com
+      http:
+        paths:
+          - path: "/*"
+            pathType: Prefix
+            backend:
+              service:
+                name: file-service
+                port:
+                  number: 80
+
+    - host: socket.beepchat.com
+      http:
+        paths:
+          - path: "/*"
+            pathType: Prefix
+            backend:
+              service:
+                name: socket-service
+                port:
+                  number: 80

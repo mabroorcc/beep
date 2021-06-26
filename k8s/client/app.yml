@@ -1,0 +1,44 @@
+# Deployment for the client-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-service-deployment
+  labels:
+    app: client-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: client-pod
+  template:
+    metadata:
+      name: client-pod
+      labels:
+        app: client-pod
+    spec:
+      containers:
+        - name: auth-container
+          image: beepchat/beep-web-client:dep-less
+          ports:
+            - containerPort: 80
+              name: auth-cont-port
+          env:
+            - name: FILE_SERVICE_HOST
+              value: http://files.beep.com
+            - name: AUTH_SERVICE_HOST
+              value: http://auth.beep.com
+            - name: SOCKET_SERVICE_HOST
+              value: http://socket.beep.com
+---
+# auth-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-service
+  labels:
+    app: client-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: client-pod

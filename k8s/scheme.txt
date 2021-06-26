@@ -1,0 +1,12 @@
+# website will be deployed on 
+    host: beepchat.com
+
+  req -------------> beepchat.com ----------> | client-service
+
+  req -------------> auth.beepchat.com -----> | auth-service
+
+  req -------------> static.beepchat.com ----> | static-service
+
+  req -------------> file.beepchat.com -----> | file-service
+
+  req -------------> socket.beepchat.com ---> | socket-service
