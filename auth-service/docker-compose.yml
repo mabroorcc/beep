@@ -1,0 +1,44 @@
+version: "3"
+services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.depless
+    environment:
+      PORT: 4001
+      COOKIE_DOMAIN: beepchat.com
+      DATABASE_HOST: auth-db
+      DATABASE_PASSWORD: pwd
+      DATABASE_USER: postgres
+      DATABASE: authdb
+      DATABASE_PORT: 5432
+      REDIS_URL: redis://authcache
+      AFTER_LOGIN_REDIRECT_URI: http://auth.beepchat.com/a/current/user
+      CLIENT_ID: 176671414954-5bai5e13isq9nso5c9cb942tga2qrhcv.apps.googleusercontent.com
+      CLIENT_SECRET: fM8_CHXCP85QflNbTanlnKMY
+      JWT_SECRET: Hsd0F6-_nzSrSiFbaP
+      GOOGLE_USER_EMAIL_SCOPE: https://www.googleapis.com/auth/userinfo.email
+      GOOGLE_USER_PROFILE_SCOPE: https://www.googleapis.com/auth/userinfo.profile
+      AUTH_REDIRECT_URI: http://auth.beepchat.com/a/login/google/callback
+    ports:
+      - "80:4001"
+
+  auth-db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_USER: postgres
+      POSTGRES_DB: authdb
+    volumes:
+      - authdb:/var/lib/postgresql/data
+    expose:
+      - 5432
+
+  auth-cache:
+    image: redis:alpine
+    container_name: authcache
+    expose:
+      - 6379
+
+volumes:
+  authdb:

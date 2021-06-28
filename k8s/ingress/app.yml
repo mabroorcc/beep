@@ -3,14 +3,14 @@ kind: Ingress
 metadata:
   name: beep-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    #nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/enable-cors: "true"
 spec:
   rules:
     - host: beepchat.com
       http:
         paths:
-          # for all routes on beepchat.com
-          - path: "/*"
+          - path: "/"
             pathType: Prefix
             backend:
               service:
@@ -21,7 +21,7 @@ spec:
     - host: auth.beepchat.com
       http:
         paths:
-          - path: "/*"
+          - path: "/"
             pathType: Prefix
             backend:
               service:
@@ -32,7 +32,7 @@ spec:
     - host: static.beepchat.com
       http:
         paths:
-          - path: "/*"
+          - path: "/"
             pathType: Prefix
             backend:
               service:
@@ -43,7 +43,7 @@ spec:
     - host: file.beepchat.com
       http:
         paths:
-          - path: "/*"
+          - path: "/"
             pathType: Prefix
             backend:
               service:
@@ -54,7 +54,7 @@ spec:
     - host: socket.beepchat.com
       http:
         paths:
-          - path: "/*"
+          - path: "/"
             pathType: Prefix
             backend:
               service:

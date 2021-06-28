@@ -3,7 +3,14 @@ import redis from "redis";
 const REDIS_URL = process.env.REDIS_URL;
 if (!REDIS_URL) throw new Error("REDIS_URL not found!");
 
-const client = redis.createClient(REDIS_URL);
+let client: redis.RedisClient;
+
+try {
+  client = redis.createClient(REDIS_URL);
+} catch (e) {
+  console.log(e);
+  throw new Error("Cache integration failed exiting!");
+}
 
 export const storeJwtIdInCache = async (
   jwtId: string,

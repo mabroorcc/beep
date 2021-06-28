@@ -4,17 +4,19 @@ import * as authService from "./auth.service";
 import * as Responder from "../responder";
 import {
   FIRST_LOGIN_REDIRECT,
-  REDIRECT_URI,
   CLIENT_ID,
   CLIENT_SECRET,
+  REDIRECT_URI,
 } from "../credentials";
 import { ServerException } from "../exceptions";
 import { StatusCodes } from "http-status-codes";
 import authMiddleWare from "../middlewares/auth.middleware";
 
 const AFTER_LOGIN_REDIRECT_URI = process.env.AFTER_LOGIN_REDIRECT_URI;
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN;
 if (!AFTER_LOGIN_REDIRECT_URI)
   throw new Error("AFTER_LOGIN_REDIRECT_URI not found");
+if (!COOKIE_DOMAIN) throw new Error("COOKIE_DOMAIN not found");
 
 const authRouter = Router();
 
@@ -69,7 +71,7 @@ authRouter.get("/login/google/callback", async (req, res) => {
     // genearting token with that profile
     const { token, newuser } = await authService.getTokenByLogin(profile);
 
-    res.cookie("auth", token, { httpOnly: true });
+    res.cookie("auth", token, { domain: COOKIE_DOMAIN, httpOnly: true });
     res.cookie("new", String(newuser));
 
     // here user is logged in now and we should redirect him to website

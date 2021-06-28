@@ -10,3 +10,23 @@
   req -------------> file.beepchat.com -----> | file-service
 
   req -------------> socket.beepchat.com ---> | socket-service
+
+
+host -
+
+---
+auth
+  env
+    after_login_redirect
+    auth_redirect_uri
+---
+client
+  env
+    all
+---
+file
+  env
+    files_host
+---
+ingress
+  all

@@ -20,10 +20,10 @@ spec:
           image: beepchat/beep-socket-service:dep-less
           ports:
             - containerPort: 80
-              name: socket-cont-port
+              name: socket-c-port
           env:
             - name: BEEP_SOCKET_SERVICE_PORT
-              value: 80
+              value: "80"
             - name: BEEP_SOCKET_SERVICE_DBHOST
               value: socket-db-service
             - name: BEEP_SOCKET_SERVICE_DBPASSWORD
@@ -33,7 +33,7 @@ spec:
             - name: BEEP_SOCKET_SERVICE_DB
               value: socketdb
             - name: BEEP_SOCKET_SERVICE_DBPORT
-              value: 80
+              value: "80"
             - name: AUTH_SERVICE_URL
               value: http://auth-service:80
 

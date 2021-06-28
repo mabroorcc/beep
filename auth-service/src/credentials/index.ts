@@ -1,8 +1,4 @@
 // These should be the environment variables
-//
-//
-//
-//
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const GOOGLE_USER_EMAIL_SCOPE = process.env.GOOGLE_USER_EMAIL_SCOPE;

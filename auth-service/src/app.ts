@@ -33,6 +33,11 @@ app.use(cookieParser());
 app.use("/a", authController);
 app.use("/users", usersController);
 
+// 404
+app.use((req, res) => {
+  res.status(404).send();
+});
+
 // Retry logic for database
 let connectionAtempts = 0;
 function startServer() {

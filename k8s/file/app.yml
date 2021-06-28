@@ -22,7 +22,7 @@ spec:
               name: file-cont-port
           env:
             - name: FILE_SERVICE_PORT
-              value: 80
+              value: "80"
             - name: AUTH_SERVICE_URL
               value: http://auth-service:80
             - name: FILES_HOST

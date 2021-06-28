@@ -19,7 +19,7 @@ spec:
           image: beepchat/beep-static-service:prod
           ports:
             - containerPort: 80
-              name: static-cont-port
+              name: static-c-port
           volumeMounts:
             - name: files-vol
               mountPath: /usr/share/nginx/files

@@ -16,18 +16,18 @@ spec:
         app: client-pod
     spec:
       containers:
-        - name: auth-container
+        - name: client-container
           image: beepchat/beep-web-client:dep-less
           ports:
             - containerPort: 80
-              name: auth-cont-port
+              name: client-c-port
           env:
             - name: FILE_SERVICE_HOST
-              value: http://files.beep.com
+              value: http://file.beepchat.com
             - name: AUTH_SERVICE_HOST
-              value: http://auth.beep.com
+              value: http://auth.beepchat.com
             - name: SOCKET_SERVICE_HOST
-              value: http://socket.beep.com
+              value: http://socket.beepchat.com
 ---
 # auth-service
 apiVersion: v1

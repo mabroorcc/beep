@@ -51,7 +51,6 @@ const authMiddleWare = async (
 
     next();
   } catch (e) {
-    console.log("error", e);
     Responder.Error(res, StatusCodes.BAD_REQUEST, "Please login first!");
   }
 };
