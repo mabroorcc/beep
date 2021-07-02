@@ -76,7 +76,11 @@ authRouter.get("/login/google/callback", async (req, res) => {
       httpOnly: true,
       path: "/",
     });
-    res.cookie("new", String(newuser));
+
+    res.cookie("new", String(newuser), {
+      domain: COOKIE_DOMAIN,
+      path: "/",
+    });
 
     // here user is logged in now and we should redirect him to website
     res.redirect(AFTER_LOGIN_REDIRECT_URI);
@@ -111,7 +115,11 @@ authRouter.get("/verify/jwt/:jwtid", async (req, res) => {
 //
 authRouter.get("/signout", authMiddleWare, (req, res) => {
   // removing the cookie
-  res.cookie("auth", "");
+  res.cookie("auth", "", {
+    domain: COOKIE_DOMAIN,
+    httpOnly: true,
+    path: "/",
+  });
 
   // removing the cache
   authService.deleteToken(req.user.jwtId);

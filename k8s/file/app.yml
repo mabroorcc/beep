@@ -26,7 +26,7 @@ spec:
             - name: AUTH_SERVICE_URL
               value: http://auth-service:80
             - name: FILES_HOST
-              value: static.beep.com
+              value: http://static.beepchat.com
           volumeMounts:
             - name: files-vol
               mountPath: /app/files
