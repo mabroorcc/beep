@@ -28,6 +28,8 @@ const authMiddleWare = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(req.cookies);
+
   const token = req.cookies.auth;
 
   if (!token) {

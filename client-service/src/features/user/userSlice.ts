@@ -24,11 +24,15 @@ const initialState: UserState = {
 
 export const getCurrentUser = async () => {
   try {
-    const res = await fetch(ENV.AUTH_SERVICE_HOST + "/a/current/user");
+    const res = await fetch(ENV.AUTH_SERVICE_HOST + "/a/current/user", {
+      credentials: "include",
+    });
     if (res.ok) {
       const json = await res.json();
       if (json.payload && json.payload.user) return json.payload.user as User;
       return undefined;
+    } else {
+      console.log(res);
     }
     return undefined;
   } catch (e) {

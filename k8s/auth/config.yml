@@ -4,7 +4,7 @@ metadata:
   name: auth-svc-cfg
 data:
   PORT: "80"
-  COOKIE_DOMAIN: beepchat.com
+  COOKIE_DOMAIN: .beepchat.com
   DATABASE_HOST: auth-db-service
   DATABASE_PASSWORD: pwd
   DATABASE_USER: postgres

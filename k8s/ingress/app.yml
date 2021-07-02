@@ -3,8 +3,9 @@ kind: Ingress
 metadata:
   name: beep-ingress
   annotations:
-    #nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "http://beepchat.com"
 spec:
   rules:
     - host: beepchat.com

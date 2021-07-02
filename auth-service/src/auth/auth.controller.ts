@@ -71,7 +71,11 @@ authRouter.get("/login/google/callback", async (req, res) => {
     // genearting token with that profile
     const { token, newuser } = await authService.getTokenByLogin(profile);
 
-    res.cookie("auth", token, { domain: COOKIE_DOMAIN, httpOnly: true });
+    res.cookie("auth", token, {
+      domain: COOKIE_DOMAIN,
+      httpOnly: true,
+      path: "/",
+    });
     res.cookie("new", String(newuser));
 
     // here user is logged in now and we should redirect him to website
